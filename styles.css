@@ -35,6 +35,10 @@ body {
     margin: 0;
 }
 
+.stream-thumbnail {
+    width: 100%;
+}
+
 #channel-filter {
     background-color: #000000;
 }
