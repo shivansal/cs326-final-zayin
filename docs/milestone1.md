@@ -12,16 +12,19 @@ Spazz
 ## Innovative Idea
 Spazz is a web application that enables users to stream and view live ameatur sports. Spazz brings the game to your laptop allowing our users to never have to leave their comfort zone. With low latency streaming and interactive chat, we provide a collaborative space for sport fans to get together. Currently, there is no way for sport fans to tune into amateur sporting events and Spazz hopes to fix this problem. 
 <br>
-## Important Components/Data Interactions
-* Video Streaming for amatuer website
-* Score keeping for the live games
-* Community building tools such as direct and group chats
-* Authentication system for creation/management of user accounts
-* Control panel for managing stream settings
+## Important Components/Data Interactions  
+* Video Streaming for amatuer website  
+* Score keeping for the live games  
+* Community building tools such as direct and group chats  
+* Authentication system for creation/management of user accounts  
+* Control panel for managing stream settings  
 
 # wireframes
+Stream Page
 ![Stream Page Wireframe](../assets/Milestone_1_ss/wireframe_stream.png)
+Sports/Browse Page
 ![Sports/Browse Page Wireframe](../assets/Milestone_1_ss/wireframe_browse.png)
+Category Page
 ![Category Page Wireframe](../assets/Milestone_1_ss/wireframe_category.png)
 
 All our wireframe work has been logged on the link below
