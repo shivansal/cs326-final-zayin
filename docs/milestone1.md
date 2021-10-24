@@ -21,6 +21,9 @@ Spazz is a web application that enables users to stream and view live ameatur sp
 
 # wireframes
 ![Stream Page Wireframe](../assets/Milestone_1_ss/wireframe_stream.png)
+![Sports/Browse Page Wireframe](../assets/Milestone_1_ss/wireframe_browse.png)
+![Category Page Wireframe](../assets/Milestone_1_ss/wireframe_category.png)
+
 All our wireframe work has been logged on the link below
 https://wireframe.cc/pro/pp/7a15c07e8483899
 
