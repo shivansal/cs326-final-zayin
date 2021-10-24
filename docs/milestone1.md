@@ -36,3 +36,4 @@ All HTML screenshots are included in "./../assets/milestone_1_ss"
 # Work Destribution
 
 Mihir: Worked on designing and debugging the stream page
+Kyle: Worked on wireframe, designed and debugged category page
