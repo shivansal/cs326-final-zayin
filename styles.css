@@ -67,6 +67,11 @@ body {
     border-left: 0px;
 }
 
+.input-group-text {
+    border: none; 
+    background-color: black;
+}
+
 .chat-table {
     color: white;
     border-collapse: collapse;
