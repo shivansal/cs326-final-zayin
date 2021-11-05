@@ -1,0 +1,14 @@
+body {
+    background-color: #121319 !important;
+    color: #fff;
+    font-family: 'Montserrat', sans-serif !important;
+}
+
+.navbar-custom {
+    background-color: #17191F !important;
+}
+
+.input-group-text {
+    border: none; 
+    background-color: black !important;
+}
