@@ -11,4 +11,5 @@ body {
 .input-group-text {
     border: none; 
     background-color: black !important;
+    text-align: left;
 }

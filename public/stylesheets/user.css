@@ -1,0 +1,11 @@
+.input-group-text {
+    margin-bottom: 10px !important;
+}
+
+.success {
+    color: green;
+}
+
+.failed {
+    color: red;
+}
