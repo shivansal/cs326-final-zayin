@@ -19,6 +19,7 @@ function fakeStream() {
         title: faker.lorem.sentence(),
         category: faker.lorem.word(),
         live: true,
+        viewers: faker.datatype.number(),
         chat: [
             {username: faker.name.firstName(), msg: faker.lorem.sentence()},
             {username: faker.name.firstName(), msg: faker.lorem.sentence()},
@@ -30,7 +31,7 @@ function fakeStream() {
 function fakeSport() {
     return {
         name: faker.lorem.words(),
-        viewers: faker.datatype.number(),
+        image: faker.image.sports(),
    }
 }
 
@@ -49,7 +50,10 @@ app.get('/signup', (req, res) => {
 });
 
 app.post('/signup', (req, res) => {
-    //??? what does this return???
+    res.json({
+        success: true, //or false if failed
+        error: faker.lorem.words() //if failed fill this field with error msg to display
+    });
 });
 
 app.get('/login', (req, res) => {
@@ -57,7 +61,10 @@ app.get('/login', (req, res) => {
 });
 
 app.post('/login', (req, res) => {
-    //??? what does this return???
+    res.json({
+        success: faker.datatype.boolean(), //or false if failed
+        error: faker.lorem.words() //if failed fill this field with error msg to display
+    });
 })
 
 app.get('/user/info', (req, res) => {
@@ -73,7 +80,7 @@ app.get('/user/info', (req, res) => {
 
 app.get('/user', (req, res) => {
     res.sendFile(Path.join(__filename, '../public/views/user.html'));
-})
+});
 
 //stream api
 app.post('/stream/update', (req, res) => {
@@ -86,7 +93,7 @@ app.post('/stream/update', (req, res) => {
     });
 });
 
-app.get('/stream/categories', (req, res) => {
+app.get('/stream/get', (req, res) => {
     let fakeRes = {
         streams: [
            fakeStream(),

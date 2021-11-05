@@ -25,6 +25,14 @@
     color: red;
 }
 
+.success {
+    color: green;
+}
+
+.failed {
+    color: red;
+}
+
 
 
 
