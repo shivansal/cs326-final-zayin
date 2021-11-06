@@ -19,7 +19,7 @@ function handleResponse(response) {
 signupBtn.addEventListener('click', function() {
     //do clientside validation
 
-    if(password != confirmPassword){
+    if(password.localeCompare(confirmPassword) != 0){
         statusMsg.innerText = "Error: passwords don't match"
         statusMsg.classList.add('failed');
     }
