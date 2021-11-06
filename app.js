@@ -142,6 +142,10 @@ app.get('/live/:username', (req, res) => {
     res.sendFile(Path.join(__filename, '../public/views/stream.html'));
 });
 
+app.get('*',function (req, res) {
+    res.redirect('/sports');
+});
+
 //setup chat
 chatInit();
 
