@@ -9,9 +9,7 @@ async function getUserInfo() {
         }
     });
 
-    console.log(response);
-
-    user = response.json();
+    user = await response.json();
 
     const userBox = document.getElementById("userInfo");
 
