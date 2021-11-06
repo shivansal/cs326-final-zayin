@@ -53,7 +53,8 @@ app.post('/signup', (req, res) => {
     //do auth signup stuff here
     res.json({
         success: true, //or false if failed
-        error: faker.lorem.words() //if failed fill this field with error msg to display
+        error: faker.lorem.words(), //if failed fill this field with error msg to display
+        redirectUrl: 'http://localhost:3000/sports'
     });
 });
 
