@@ -81,7 +81,7 @@ let body = JSON.stringify({
     live: true
 });
 
-fetch('http://localhost:3000/stream/get', {method: "POST", body: body})
+fetch('https://cs326-zayin.herokuapp.com/stream/get', {method: "POST", body: body})
 .then(response => {
     return response.json()
 }).then(handleResponse)            
