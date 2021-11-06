@@ -78,7 +78,7 @@ app.get('/user/info', (req, res) => {
         password: faker.lorem.words(),
         stream_key: faker.lorem.words(),
         stream_title: faker.lorem.words(),
-        stream_category: faker.lerem.words(),
+        stream_category: faker.lorem.words(),
     }
 
     res.json(fakeRes);
@@ -104,7 +104,7 @@ app.post('/stream/update', (req, res) => {
     });
 });
 
-app.get('/stream/get', (req, res) => {
+app.post('/stream/get', (req, res) => {
     let fakeRes = {
         streams: [
            fakeStream(),
@@ -116,7 +116,8 @@ app.get('/stream/get', (req, res) => {
     res.json(fakeRes);
 });
 
-app.get('/stream/browse', (req, res) => {
+app.get('/stream/browse', (req, res) => { // /stream/browse?category=basketball
+    // let category = req.query["category"]
     res.sendFile(Path.join(__filename, '../public/views/category.html'));
 })
 
