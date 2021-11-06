@@ -20,6 +20,7 @@ function fakeStream() {
         category: faker.lorem.word(),
         live: true,
         viewers: faker.datatype.number(),
+        image: faker.image.sports(),
         chat: [
             {username: faker.name.firstName(), msg: faker.lorem.sentence()},
             {username: faker.name.firstName(), msg: faker.lorem.sentence()},
