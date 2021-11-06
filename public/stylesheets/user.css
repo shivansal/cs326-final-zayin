@@ -1,5 +1,5 @@
 .input-group-text {
-    margin-bottom: 10px !important;
+    margin-bottom: 5px !important;
 }
 
 .success {
@@ -8,4 +8,8 @@
 
 .failed {
     color: red;
+}
+
+.user-info {
+    margin-bottom: 5px;
 }
