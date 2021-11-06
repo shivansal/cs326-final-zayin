@@ -78,7 +78,7 @@ app.get('/user/info', (req, res) => {
         password: faker.lorem.words(),
         stream_key: faker.lorem.words(),
         stream_title: faker.lorem.words(),
-        stream_category: faker.lerem.words(),
+        stream_category: faker.lorem.words(),
     }
 
     res.json(fakeRes);
