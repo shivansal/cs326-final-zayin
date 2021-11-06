@@ -50,9 +50,11 @@ app.get('/signup', (req, res) => {
 });
 
 app.post('/signup', (req, res) => {
+    //do auth signup stuff here
     res.json({
         success: true, //or false if failed
-        error: faker.lorem.words() //if failed fill this field with error msg to display
+        error: faker.lorem.words(), //if failed fill this field with error msg to display
+        redirectUrl: 'http://localhost:3000/sports'
     });
 });
 
@@ -61,15 +63,19 @@ app.get('/login', (req, res) => {
 });
 
 app.post('/login', (req, res) => {
+    //do auth login stuff here
     res.json({
-        success: faker.datatype.boolean(), //or false if failed
-        error: faker.lorem.words() //if failed fill this field with error msg to display
+        success: faker.datatype.boolean(),
+        error: faker.lorem.words(), //if failed fill this field with error msg to display
+        redirectUrl: 'http://localhost:3000/sports',
     });
 })
 
 app.get('/user/info', (req, res) => {
+
     let fakeRes = {
         username: faker.name.firstName(),
+        password: faker.lorem.words(),
         stream_key: faker.lorem.words(),
         stream_title: faker.lorem.words(),
         stream_category: faker.lerem.words(),
@@ -79,6 +85,11 @@ app.get('/user/info', (req, res) => {
 });
 
 app.get('/user', (req, res) => {
+    /* Confirm the user is authorized here
+        If not we would normally redirect
+        Otherwise render user.html
+    */
+
     res.sendFile(Path.join(__filename, '../public/views/user.html'));
 });
 
