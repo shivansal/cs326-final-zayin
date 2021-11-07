@@ -38,7 +38,7 @@ function fakeSport() {
 
 const app = express();
 const server = Http.createServer(app);
-const httpPort = 3000;
+const httpPort = process.env.PORT || 3000;
 const __filename = fileURLToPath(import.meta.url);
 app.use(express.static('public'))
 
