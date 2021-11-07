@@ -134,5 +134,13 @@ Websockets (for stream chat)&nbsp;
 			Fires when the server emits a chatMessage event
 			1. Will update the chat by adding a new message with username = username, message = msg
 
-Screenshots:
+Screenshots: All screenshots are in screenshot folder
+
+/live.png: Renders the stream and chat
+
+/sports.png: Renders all sports categories 
+
+/stream/browse.png: Renders all live streams in a specific category
+
+/user.png: Display user info and allow for updating
 
