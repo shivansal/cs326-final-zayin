@@ -144,3 +144,12 @@ Screenshots: All screenshots are in screenshot folder
 
 /user.png: Display user info and allow for updating
 
+How to build:
+
+	1. npm install
+	2. node app.js
+
+Division of labor
+Kyle: Backend skeleton, API documentation, chat page, user page, login page&nbsp;
+Shiv: Backend skeleton, signup page, categories/browse page&nbsp;
+Mirhir: Backend skeleton, sports page, navbar work&nbsp;
