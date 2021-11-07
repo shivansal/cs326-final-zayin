@@ -13,6 +13,7 @@ let currentProfileUrl = document.getElementById('current-profileurl');
 let newProfileUrl = document.getElementById('new-profileurl');
 let updateUserBtn = document.getElementById('update-user-btn');
 
+
 //handle the response by telling the user what happened
 //and updating the title and category on screen
 function handleUpdateStreamResponse(response, title, category, streamThumb) {
@@ -105,9 +106,10 @@ function getUserInfo() {
         currentTitle.innerText = response.stream_title;
         currentCategory.innerText = response.stream_category;
         currentStreamThumb.innerText = response.stream_thumbnail;
+        streamKey.innerText = response.stream_key;
     });
 
-
+    
 
 }
 
