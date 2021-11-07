@@ -151,5 +151,7 @@ How to build:
 
 Division of labor
 Kyle: Backend skeleton, API documentation, chat page, user page, login page&nbsp;
+
 Shiv: Backend skeleton, signup page, categories/browse page&nbsp;
+
 Mirhir: Backend skeleton, sports page, navbar work&nbsp;
