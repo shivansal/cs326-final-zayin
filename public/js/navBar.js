@@ -3,7 +3,7 @@ let user = {};
 getUserInfo();
 
 async function getUserInfo() {
-    const response = await fetch("http://localhost:3000/user/info", {
+    const response = await fetch("https://cs326-zayin.herokuapp.com/user/info", {
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
         }

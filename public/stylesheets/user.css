@@ -10,6 +10,11 @@
     color: red;
 }
 
+#profile-picture {
+    width: 125px;
+    height: 125px;
+}
+
 .user-info {
-    margin-bottom: 5px;
+    margin-bottom: 10px;
 }

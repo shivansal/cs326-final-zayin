@@ -7,18 +7,18 @@ export default function chatInit(httpServer) {
     //create namespace
     const chatNamespace = io.of('/chat');
     chatNamespace.on('connection', (socket) => {
-            console.log(socket.handshake.query["streamer_name"]);
-            
+            //socket.handshake.query["streamer_name"] use this to verify
+
             //need to do some auth here also
             //cant chat unless authorized but can still see messages
 
             socket.on('chatMessage', (msg) => {
                 //we would actually emit to an entire room of sockets
                 //but this is just a dummy endpoint right now so it doesnt matter
-               socket.emit({ 
+               socket.emit('chatMessage', { 
                    username: faker.name.firstName(),
                    msg: faker.lorem.words(),
-               })
+               });
             });
 
             socket.on('disconnect', () => {

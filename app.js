@@ -6,7 +6,7 @@ import chatInit from './src/chat.js'
 import rtmpInit from './src/rtmp.js';
 import express from 'express';
 import { fileURLToPath } from 'url';
-import bodyParser from "body-parser";
+import bodyParser from 'body-parser';
 
 /*
 express/webserver stuff
@@ -38,11 +38,11 @@ function fakeSport() {
 
 const app = express();
 const server = Http.createServer(app);
-const httpPort = process.env.PORT || 3000;
+const httpPort = 3000;
 const __filename = fileURLToPath(import.meta.url);
 app.use(express.static('public'))
 
-app.use(bodyParser.urlencoded({ extended: true }));
+//app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 //user api
@@ -80,10 +80,23 @@ app.get('/user/info', (req, res) => {
         stream_key: faker.lorem.words(),
         stream_title: faker.lorem.words(),
         stream_category: faker.lorem.words(),
+        profilepic: faker.image.animals(),
+        stream_thumbnail: faker.image.sports(),
     }
 
     res.json(fakeRes);
 });
+
+app.post('/user/update', (req, res) => {
+    console.log(req.body);
+
+    let fakeRes = {
+        success: faker.datatype.boolean(),
+        error: faker.lorem.words(),
+    }
+
+    res.json(fakeRes);
+})
 
 app.get('/user', (req, res) => {
     /* Confirm the user is authorized here
@@ -96,8 +109,6 @@ app.get('/user', (req, res) => {
 
 //stream api
 app.post('/stream/update', (req, res) => {
-    console.log(req.body.title)
-    console.log(req.body.category)
 
     //verify title and category
     res.json({
@@ -149,7 +160,7 @@ app.get('*',function (req, res) {
 });
 
 //setup chat
-chatInit();
+chatInit(server);
 
 //setup rtmp/nms
 rtmpInit();

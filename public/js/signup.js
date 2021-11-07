@@ -31,7 +31,7 @@ signupBtn.addEventListener('click', function() {
             password: password.innerText,
         });
     
-        fetch('http://localhost:3000/signup', {method: "POST", body: body})
+        fetch('https://cs326-zayin.herokuapp.com/signup', {method: "POST", body: body})
         .then(response => {
             return response.json()
         }).then(handleResponse)
