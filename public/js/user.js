@@ -60,7 +60,7 @@ updateStreamBtn.addEventListener('click', function() {
     });
 
     //send post to /stream/update endpoint
-    fetch('http://localhost:3000/stream/update', {method: 'POST', body: body, headers: headers})
+    fetch('https://cs326-zayin.herokuapp.com/stream/update', {method: 'POST', body: body, headers: headers})
     .then(response => {
         return response.json();
     }).then(function(response) {
