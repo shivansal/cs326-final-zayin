@@ -149,7 +149,7 @@ app.get('*',function (req, res) {
 });
 
 //setup chat
-chatInit();
+chatInit(server);
 
 //setup rtmp/nms
 rtmpInit();

@@ -1,0 +1,32 @@
+#chat-box {
+    overflow-wrap: break-word;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.chat-table {
+    color: white;
+    border-collapse: collapse;
+}
+
+.chat-box {
+    background-color: rgba(255, 255, 255, 0.774);
+    border-radius: 10px;
+    border-color: grey;
+    border-width: 2px;
+    padding: 5px;
+    height: 350px;
+}
+
+.chat-username {
+    font-weight: bold;
+    color: rgb(179, 17, 17);
+    font-size: small;
+}
+
+.chat-message {
+    font-weight: normal;
+    font-size: small;
+    color: black;
+}
