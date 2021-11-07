@@ -40,10 +40,25 @@
     </nav>
     <div class="container-fluid">
         <div class="row mb-2">
-            <div class="col-md-3 col-xs-12">
+            <div class="col-lg-6 col-md-12">
+                <h2>Your Profile</h2>
+                <img src="/img/thumbnail.jpeg" alt="" height="250" id="profile-picture" />
                 <p class="user-info">
-                    Username: <span id="current-username">asdasd</span>
+                    Username:  <span id="current-username"></span>
                 </p>
+                
+                <p class="user-info">
+                    Profile picture URL: <span id="current-profileurl"></span>
+                </p>
+                <div class="input-group">
+                    <input type="text" class="form-control input-group-text" id="new-profileurl"
+                        placeholder="Change profile picture url">
+                </div>
+                <div class="form-group">
+                    <button type="button" class="btn btn-primary btn-block" id="update-user-btn">Update User!</button>
+                </div>
+               
+                <h2>Your stream details</h2>
                 <p class="user-info">
                     Stream Title: <span id="current-title">Playing dem sportsz</span>
                 </p>
@@ -52,6 +67,9 @@
                 </p>
                 <p class="user-info">
                     Stream Key: <span id="stream-key">XXX-XXXX</span>
+                </p>
+                <p class="user-info">
+                    Stream thumbnail URL: <span id="stream-thumb"></span>
                 </p>
                 <form>
                     <div class="input-group">
@@ -62,8 +80,12 @@
                         <input type="text" class="form-control input-group-text" id="new-category"
                             placeholder="Change stream category">
                     </div>
+                    <div class="input-group">
+                        <input type="text" class="form-control input-group-text" id="new-stream-thumb"
+                            placeholder="Change stream thumbnail">
+                    </div>
                     <div class="form-group">
-                        <button type="button" class="btn btn-primary btn-block" id="update-btn">Update!</button>
+                        <button type="button" class="btn btn-primary btn-block" id="update-stream-btn">Update Stream!</button>
                     </div>
                     <p id="status-msg"></p>
                 </form>
