@@ -19,9 +19,11 @@ function handleResponse(response) {
 }
 
 signupBtn.addEventListener('click', function() {
+    console.log("hello")
     //do clientside validation
-
-    if(password.localeCompare(confirmPassword) != 0){
+    console.log(password.value)
+    console.log(confirmPassword.value)
+    if(password.value !== confirmPassword.value){
         statusMsg.innerText = "Error: passwords don't match"
         statusMsg.classList.add('failed');
     }
@@ -35,5 +37,7 @@ signupBtn.addEventListener('click', function() {
         .then(response => {
             return response.json()
         }).then(handleResponse)
+
+        window.location.href = "/"
     }   
 })
