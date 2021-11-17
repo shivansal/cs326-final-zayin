@@ -7,6 +7,8 @@ import rtmpInit from './src/rtmp.js';
 import express from 'express';
 import { fileURLToPath } from 'url';
 import bodyParser from 'body-parser';
+import * as mongodb from 'mongodb';
+
 
 /*
 express/webserver stuff
@@ -43,20 +45,70 @@ const __filename = fileURLToPath(import.meta.url);
 app.use(express.static('public'))
 
 //app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
 app.use(bodyParser.json());
+
+//set up mongodb connection
+
+const uri = "mongodb+srv://zayan:cs326@cluster0.dawjv.mongodb.net/test?retryWrites=true&w=majority";
+const client = new mongodb.MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
+async function listDatabases(client){
+    var databasesList = await client.db().admin().listDatabases();
+    console.log("Databases:");
+    databasesList.databases.forEach(db => console.log(` - ${db.name}`));
+};
+ 
+try {
+    // Connect to the MongoDB cluster
+    await client.connect();
+    // Make the appropriate DB calls
+    await listDatabases(client);
+} catch (e) {
+    console.error(e);
+} 
+// finally {
+//     await client.close();
+// }
+
+
+
 
 //user api
 app.get('/signup', (req, res) => {
     res.sendFile(Path.join(__filename, '../public/views/signup.html'));
 });
 
-app.post('/signup', (req, res) => {
+app.post('/signup', async (req, res) => {
     //do auth signup stuff here
-    res.json({
-        success: true, //or false if failed
-        error: faker.lorem.words(), //if failed fill this field with error msg to display
-        redirectUrl: 'http://localhost:3000/sports'
-    });
+    // console.log(req.body)
+    const database = client.db("spazz");
+    const user = database.collection("user");
+
+    const doc = {
+        username: req.body.username,
+        password: req.body.password,
+        stream_key: "",
+        profilepic: ""
+    }
+    try{
+        const result = await user.insertOne(doc);
+    } catch (e) {
+        console.error(e);
+        res.json({
+            success: false, //or false if failed
+            error: faker.lorem.words(), //if failed fill this field with error msg to display
+            redirectUrl: ''
+        });
+    } finally{
+        res.json({
+            success: true, //or false if failed
+            error: faker.lorem.words(), //if failed fill this field with error msg to display
+            redirectUrl: 'http://localhost:3000/sports'
+        });
+    }
 });
 
 app.get('/login', (req, res) => {
@@ -64,6 +116,7 @@ app.get('/login', (req, res) => {
 });
 
 app.post('/login', (req, res) => {
+    console.log(req.body)
     //do auth login stuff here
     res.json({
         success: faker.datatype.boolean(),
