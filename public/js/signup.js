@@ -19,27 +19,25 @@ function handleResponse(response) {
 }
 
 signupBtn.addEventListener('click', function() {
+    console.log("hello")
     //do clientside validation
+    console.log(password.value)
+    console.log(confirmPassword.value)
     if(password.value !== confirmPassword.value){
         statusMsg.innerText = "Error: passwords don't match"
         statusMsg.classList.add('failed');
     }
     else{
         let body = JSON.stringify({
-            username: username.value,
-            password: password.value,
+            username: username.innerText,
+            password: password.innerText,
         });
     
-        fetch('http://localhost:3000/signup', { //https://cs326-zayin.herokuapp.com/signup
-            method: "POST", 
-            headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-            }, 
-            body: body}) 
+        fetch('https://cs326-zayin.herokuapp.com/signup', {method: "POST", body: body})
         .then(response => {
             return response.json()
         }).then(handleResponse)
-        // window.location.href = "/"
+
+        window.location.href = "/"
     }   
 })

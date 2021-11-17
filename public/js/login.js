@@ -19,11 +19,11 @@ loginBtn.addEventListener('click', function() {
     //do clientside validation
 
     let body = JSON.stringify({
-        username: username.value,
-        password: password.value,
+        username: username.innerText,
+        password: password.innerText,
     });
-    
-    fetch('http://localhost:3000/login', {method: "POST", body: body}) //https://cs326-zayin.herokuapp.com/login
+
+    fetch('https://cs326-zayin.herokuapp.com/login', {method: "POST", body: body})
     .then(response => {
         return response.json()
     }).then(handleResponse)
