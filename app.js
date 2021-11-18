@@ -26,7 +26,7 @@ mongoInit(process.env.MONGO_URL, (stuff) => {
     client = stuff.client;
     userCollection = stuff.userCollection;
     streamCollection = stuff.streamCollection;
-    rtmpInit(userCollection);
+    rtmpInit(userCollection, streamCollection);
 });
 
 async function listDatabases(){
@@ -277,16 +277,27 @@ app.post('/stream/update', (req, res) => {
     });
 });
 
-app.post('/stream/get', (req, res) => {
-    let fakeRes = {
-        streams: [
-           fakeStream(),
-           fakeStream(),
-           fakeStream(),
-        ]
-    };
+app.post('/stream/get', async (req, res) => {
+    let query = {}
 
-    res.json(fakeRes);
+    if (req.body.username) {
+        query.username = req.body.username;
+    }
+
+    if (req.body.category) {
+        query.category = req.body.category;
+    }
+
+    if (req.body.live) {
+        query.live = req.body.live;
+    }
+
+    let streamDocs = await streamCollection.find(query).toArray();
+    if (streamDocs) {
+        res.json({'streams': streamDocs});
+    } else {
+        res.json({'streams': []});
+    }
 });
 
 app.get('/stream/browse', (req, res) => { // /stream/browse?category=basketball
