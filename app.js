@@ -8,7 +8,12 @@ import express from 'express';
 import { fileURLToPath } from 'url';
 import bodyParser from 'body-parser';
 import * as mongodb from 'mongodb';
+import * as dotenv from 'dotenv';
+import * as expressSession from 'express-session';
+import * as passport from 'passport';
+import Strategy from 'passport-local';
 
+dotenv.config() //load env variables
 
 /*
 express/webserver stuff
@@ -52,7 +57,7 @@ app.use(bodyParser.json());
 
 //set up mongodb connection
 
-const uri = "mongodb+srv://zayan:cs326@cluster0.dawjv.mongodb.net/test?retryWrites=true&w=majority";
+const uri = process.env.MONGO_URL;
 const client = new mongodb.MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 async function listDatabases(client){
@@ -124,7 +129,6 @@ app.post('/login', async (req, res) => {
     try{
         result = await user.findOne({"username": req.body.username});
     } catch (e) {
-        console.log("work")
         console.error(e);
         res.json({
             success: false, //or false if failed
