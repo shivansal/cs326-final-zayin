@@ -20,10 +20,12 @@ dotenv.config();
 
 let client = null;
 let userCollection = null;
+let streamCollection = null;
 
 mongoInit(process.env.MONGO_URL, (stuff) => {
     client = stuff.client;
     userCollection = stuff.userCollection;
+    streamCollection = stuff.streamCollection;
     rtmpInit(userCollection);
 });
 
@@ -149,23 +151,31 @@ app.post('/signup', async (req, res) => {
     //generate stream key, set default profile
 
     const newUserDoc = newUser(username, password, generateStreamKey(), profilePic)
-    console.log(newUserDoc)
-    userCollection.insertOne(newUserDoc, (err, mongoRes) => {
-        let errorMsg;
-        let success = true;
-        let redirectUrl = 'http://localhost:3000/login'
+    let success = true;
+    let errorMsg = '';
+    let redirectUrl = 'http://localhost:3000/login';
 
-        if (err) {
-            errorMsg = 'An error occured';
+    //insert user
+    let mongoRes = await userCollection.insertOne(newUserDoc);
+
+    if (mongoRes === null || !mongoRes.acknowledged) {
+        success = false;
+        errorMsg = 'Signup failed';
+    } else {
+        //insert stream
+        let newStreamDoc = newStream(username, username + '\'s livestream', 'default', false, 0, [])
+        mongoRes = await streamCollection.insertOne(newStreamDoc);
+
+        if (mongoRes === null || !mongoRes.acknowledged) {
             success = false;
-            redirectUrl = '';
+            errorMsg = 'Stream creation failed';
         }
+    }
 
-        res.json({
-            success: success,
-            error: errorMsg,
-            redirectUrl: redirectUrl
-        });
+    res.json({
+        success: success,
+        errorMsg: errorMsg,
+        redirectUrl: redirectUrl
     });
 });
 

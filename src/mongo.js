@@ -11,6 +11,7 @@ export async function mongoInit(uri, cb) {
     cb({
         client: client,
         userCollection: database.collection("user"),
+        streamCollection: database.collection("stream"),
     });
 }
 

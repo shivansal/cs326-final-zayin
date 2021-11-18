@@ -4,8 +4,6 @@ let confirmPassword = document.getElementById('confirm-password');
 let signupBtn = document.getElementById('signup-btn');
 let statusMsg = document.getElementById('status-msg');
 
-
-
 function handleResponse(response) {
     statusMsg.className = '';
     if (response.success) {
