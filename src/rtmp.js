@@ -1,6 +1,6 @@
 import NodeMediaServer from 'node-media-server';
 
-export default function rtmpInit() {
+export default function rtmpInit(userCollection) {
     const config = {
         rtmp: {
           port: 1935,
@@ -21,10 +21,18 @@ export default function rtmpInit() {
         
       //event fires when a user attempts to start a stream
       nms.on('prePublish', (id, StreamPath, args) => {
-          if ('key' in args) {
-              let userName = getUserFromStreamPath(StreamPath);
-              let streamKey = args.key
-      
+          console.log(args)
+          if ('streamkey' in args) {
+                let username = getUserFromStreamPath(StreamPath);
+                let streamKey = args.streamkey
+
+
+
+                userCollection.findOne({username: username, stream_key: streamKey}, function(err, res) {
+                    console.log(res);
+                });
+
+            
       
               /* 
               Reject if streamKey is invalid:

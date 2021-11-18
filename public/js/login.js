@@ -5,12 +5,13 @@ let statusMsg = document.getElementById('status-msg');
 
 function handleResponse(response) {
     statusMsg.className = '';
-    if (response.status == 200) {
+    console.log(response)
+    if (response.success) {
         //perform redirect
         window.location.replace(response.redirectUrl);
     } else {
         //display the error message
-        statusMsg.innerText = 'Error: login failed'
+        statusMsg.innerText = response.error
         statusMsg.classList.add('failed');
     }
 }
@@ -29,7 +30,9 @@ loginBtn.addEventListener('click', function() {
             'Content-Type': 'application/json'
         }, 
         body: body}) //https://cs326-zayin.herokuapp.com/login
-    .then(response => {
-        return response
-    }).then(handleResponse)
+        .then(response => {
+            return response.json();
+        }).then(function(response) {
+            handleResponse(response)
+        });
 })

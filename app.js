@@ -7,13 +7,34 @@ import rtmpInit from './src/rtmp.js';
 import express from 'express';
 import { fileURLToPath } from 'url';
 import bodyParser from 'body-parser';
-import * as mongodb from 'mongodb';
-import * as dotenv from 'dotenv';
+import dotenv from 'dotenv'
 import expressSession from 'express-session';
 import passport from 'passport';
 import LocalStrategy from 'passport-local';
 
-dotenv.config() //load env variables
+import { generateStreamKey, newUser } from './src/user.js';
+import {newStream} from './src/stream.js';
+import { mongoInit } from './src/mongo.js';
+
+dotenv.config();
+
+let client = null;
+let userCollection = null;
+
+mongoInit(process.env.MONGO_URL, (stuff) => {
+    client = stuff.client;
+    userCollection = stuff.userCollection;
+    rtmpInit(userCollection);
+});
+
+async function listDatabases(){
+    var databasesList = await client.db().admin().listDatabases();
+    console.log("Databases:");
+    databasesList.databases.forEach(db => console.log(` - ${db.name}`));
+}
+
+
+
 
 // Session configuration
 const session = {
@@ -25,23 +46,20 @@ const session = {
 //Passport config
 const strategy = new LocalStrategy(
     async (username, password, done) => {
-        const database = client.db("spazz");
-        const user = database.collection("user");
-        var result = null;
-        try{
-            result = await user.findOne({"username": username});
-        } catch (e) {
-            console.error(e);
-            return done(null, false, { 'message' : 'Wrong username' });
-        } finally{
-            if(result != null && result.password == password){
-                return done(null, username);
+        userCollection.findOne({'username': username}, (err, user) => {
+            if (err) { return done(err); }
+            
+            if (!user) {
+                return done(null, false, {message: "Wrong username"});
             }
-            else{
-                return done(null, false, { 'message' : 'Login failed' });
+
+            if (password !== user.password) {
+                return done(null, false, {mesagge: "Wrong password"});
             }
-        }
-    });
+
+            return done(null, user);
+        });
+});
 
 /*
 express/webserver stuff
@@ -98,25 +116,7 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 
-//set up mongodb connection
 
-const uri = process.env.MONGO_URL;
-const client = new mongodb.MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-
-async function listDatabases(client){
-    var databasesList = await client.db().admin().listDatabases();
-    console.log("Databases:");
-    databasesList.databases.forEach(db => console.log(` - ${db.name}`));
-};
- 
-try {
-    // Connect to the MongoDB cluster
-    await client.connect();
-    // Make the appropriate DB calls
-    await listDatabases(client);
-} catch (e) {
-    console.error(e);
-} 
 // finally {
 //     await client.close();
 // }
@@ -139,46 +139,58 @@ app.get('/signup', (req, res) => {
 
 app.post('/signup', async (req, res) => {
     //do auth signup stuff here
-    // console.log(req.body)
-    const database = client.db("spazz");
-    const user = database.collection("user");
+    const username = req.body.username;
+    const password = req.body.password;
+    const streamKey = "nothing";
+    const profilePic = "default";
 
-    const doc = {
-        username: req.body.username,
-        password: req.body.password,
-        stream_key: "",
-        profilepic: ""
-    }
-    try{
-        const result = await user.insertOne(doc);
-    } catch (e) {
-        console.error(e);
+    //validate username, password
+    //generate stream key, set default profile
+
+    const newUserDoc = newUser(username, password, generateStreamKey(), profilePic)
+    userCollection.insertOne(newUserDoc, (err, mongoRes) => {
+        let errorMsg;
+        let success = true;
+        let redirectUrl = 'http://localhost:3000/login'
+
+        if (err) {
+            errorMsg = 'An error occured';
+            success = false;
+            redirectUrl = '';
+        }
+
         res.json({
-            success: false, //or false if failed
-            error: faker.lorem.words(), //if failed fill this field with error msg to display
-            redirectUrl: ''
+            success: success,
+            error: errorMsg,
+            redirectUrl: redirectUrl
         });
-    } finally{
-        res.json({
-            success: true, //or false if failed
-            error: faker.lorem.words(), //if failed fill this field with error msg to display
-            redirectUrl: 'http://localhost:3000/sports'
-        });
-    }
+    });
 });
 
 app.get('/login', (req, res) => {
     res.sendFile(Path.join(__filename, '../public/views/login.html'));
 });
 
-app.post('/login', passport.authenticate('local'),
-    function(req, res) { //only runs if authentication passes
-        res.json({
-            success: true, //or false if failed
-            error: faker.lorem.words(), //if failed fill this field with error msg to display
-            redirectUrl: 'http://localhost:3000/sports'
-        });
-});
+app.post('/login', passport.authenticate('local', {
+    successRedirect: "/loginsuccess",
+    failureRedirect: "/loginfailure"
+}));
+
+app.get('/loginsuccess', (req, res) => {
+    res.json({
+        success: true,
+        error: '',
+        redirectUrl: 'http://localhost:3000/sports'
+    });
+})
+
+app.get('/loginfailure', (req, res) => {
+    res.json({
+        success: false,
+        error: 'Login failed: invalid username or password',
+        redirectUrl: ''
+    });
+})
 
 // Handle logging out (takes us back to the login page).
 app.get('/logout', (req, res) => {
@@ -281,9 +293,6 @@ app.get('*',function (req, res) {
 
 //setup chat
 chatInit(server);
-
-//setup rtmp/nms
-rtmpInit();
 
 server.listen(httpPort, () => {
     console.log(`App listening at http://localhost:${httpPort}`)

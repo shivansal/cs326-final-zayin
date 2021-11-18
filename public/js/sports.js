@@ -4,7 +4,8 @@ const sportsListHtml = document.getElementById("sportsList");
 getAndRenderSports();
 
 async function getAndRenderSports() {
-    const response = await fetch("https://cs326-zayin.herokuapp.com/sports/get", {
+    //https://cs326-zayin.herokuapp.com/sports/get
+    const response = await fetch("http://localhost:3000/sports/get", {
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
         }
