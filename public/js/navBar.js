@@ -18,6 +18,7 @@ async function getUserInfo() {
         document.getElementById('signin-btn').remove();
     } else {
         userBox.innerHtml = '';
+
     }
 
     

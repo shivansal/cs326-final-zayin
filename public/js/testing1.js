@@ -1,6 +1,8 @@
 
 
 
+
+
 let liveUrl = 'http://localhost:8000/live/username.flv';
 var xhr = new XMLHttpRequest();
 xhr.open('GET', liveUrl, true);

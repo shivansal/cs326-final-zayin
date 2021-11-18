@@ -81,7 +81,15 @@ let body = JSON.stringify({
     live: true
 });
 
-fetch('https://cs326-zayin.herokuapp.com/stream/get', {method: "POST", body: body})
+//https://cs326-zayin.herokuapp.com/stream/get
+fetch('http://localhost:3000/stream/get', {
+    method: "POST", 
+    body: body,
+    headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+    }
+})
 .then(response => {
     return response.json()
 }).then(handleResponse)            
