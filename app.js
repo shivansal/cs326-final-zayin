@@ -115,14 +115,38 @@ app.get('/login', (req, res) => {
     res.sendFile(Path.join(__filename, '../public/views/login.html'));
 });
 
-app.post('/login', (req, res) => {
-    console.log(req.body)
+app.post('/login', async (req, res) => {
     //do auth login stuff here
-    res.json({
-        success: faker.datatype.boolean(),
-        error: faker.lorem.words(), //if failed fill this field with error msg to display
-        redirectUrl: 'http://localhost:3000/sports',
-    });
+    const database = client.db("spazz");
+    const user = database.collection("user");
+    var result = null;
+
+    try{
+        result = await user.findOne({"username": req.body.username});
+    } catch (e) {
+        console.log("work")
+        console.error(e);
+        res.json({
+            success: false, //or false if failed
+            error: "Username invalid", //if failed fill this field with error msg to display
+            redirectUrl: ''
+        });
+    } finally{
+        if(result != null && result.password == req.body.password){
+            res.json({
+                success: true,
+                error: faker.lorem.words(), //if failed fill this field with error msg to display
+                redirectUrl: 'http://localhost:3000/sports',
+            });
+        }
+        else{
+            res.json({
+                success: false,
+                error: "Login Failed", //if failed fill this field with error msg to display
+                redirectUrl: 'http://localhost:3000/sports',
+            });
+        }
+    }
 })
 
 app.get('/user/info', (req, res) => {

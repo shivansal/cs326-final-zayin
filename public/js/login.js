@@ -17,13 +17,18 @@ function handleResponse(response) {
 
 loginBtn.addEventListener('click', function() {
     //do clientside validation
-
     let body = JSON.stringify({
         username: username.value,
         password: password.value,
     });
     
-    fetch('http://localhost:3000/login', {method: "POST", body: body}) //https://cs326-zayin.herokuapp.com/login
+    fetch('http://localhost:3000/login', {
+        method: "POST", 
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }, 
+        body: body}) //https://cs326-zayin.herokuapp.com/login
     .then(response => {
         return response.json()
     }).then(handleResponse)
