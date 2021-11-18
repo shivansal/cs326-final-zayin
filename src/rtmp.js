@@ -21,34 +21,23 @@ export default function rtmpInit(userCollection) {
         
       //event fires when a user attempts to start a stream
       nms.on('prePublish', (id, StreamPath, args) => {
-          console.log(args)
-          if ('streamkey' in args) {
+          if ('key' in args) {
                 let username = getUserFromStreamPath(StreamPath);
-                let streamKey = args.streamkey
-
-
+                let streamKey = args.key
 
                 userCollection.findOne({username: username, stream_key: streamKey}, function(err, res) {
-                    console.log(res);
+                    if (err || res === null) {   
+                        nms.getSession(id).reject();
+                        console.log("stream session rejected for username=", username, "&key=", streamKey)
+                    }
                 });
-
-            
-      
-              /* 
-              Reject if streamKey is invalid:
-      
-              let user = db.users.find({username:userName})
-              if !user or user.streamKey !== streamKey
-                  let session = nms.getSession(id);
-                  session.reject()
-              */
           }
       });
       
       //event fires when stream ends
       nms.on('donePlay', (id, StreamPath, args) => {
           // onStreamEnd
-          console.log('[NodeEvent on donePlay]', `id=${id} StreamPath=${StreamPath} args=${JSON.stringify(args)}`);
+          //console.log('[NodeEvent on donePlay]', `id=${id} StreamPath=${StreamPath} args=${JSON.stringify(args)}`);
       });
 }
 

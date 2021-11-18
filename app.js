@@ -132,6 +132,7 @@ function checkLoggedIn(req, res, next) {
     }
 }
 
+
 //user api
 app.get('/signup', (req, res) => {
     res.sendFile(Path.join(__filename, '../public/views/signup.html'));
@@ -148,6 +149,7 @@ app.post('/signup', async (req, res) => {
     //generate stream key, set default profile
 
     const newUserDoc = newUser(username, password, generateStreamKey(), profilePic)
+    console.log(newUserDoc)
     userCollection.insertOne(newUserDoc, (err, mongoRes) => {
         let errorMsg;
         let success = true;
@@ -205,18 +207,24 @@ app.get('/private',
 });
 
 app.get('/user/info', (req, res) => {
+    if (req.isAuthenticated()) {
+        let fakeRes = {
+            success: true,
+            username: faker.name.firstName(),
+            password: faker.lorem.words(),
+            stream_key: faker.lorem.words(),
+            stream_title: faker.lorem.words(),
+            stream_category: faker.lorem.words(),
+            profilepic: faker.image.animals(),
+            stream_thumbnail: faker.image.sports(),
+        }
 
-    let fakeRes = {
-        username: faker.name.firstName(),
-        password: faker.lorem.words(),
-        stream_key: faker.lorem.words(),
-        stream_title: faker.lorem.words(),
-        stream_category: faker.lorem.words(),
-        profilepic: faker.image.animals(),
-        stream_thumbnail: faker.image.sports(),
+        res.json(fakeRes);
+    } else {
+        res.json({
+            success: false,
+        });
     }
-
-    res.json(fakeRes);
 });
 
 app.post('/user/update', (req, res) => {
