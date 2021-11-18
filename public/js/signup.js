@@ -11,7 +11,7 @@ function handleResponse(response) {
         window.location.replace(response.redirectUrl);
     } else {
         //display the error message
-        statusMsg.innerText = 'Error: ' + response.error 
+        statusMsg.innerText = 'Error: ' + response.errorMsg
         statusMsg.classList.add('failed');
     }
 }

@@ -150,33 +150,44 @@ app.post('/signup', async (req, res) => {
     //validate username, password
     //generate stream key, set default profile
 
-    const newUserDoc = newUser(username, password, generateStreamKey(), profilePic)
-    let success = true;
-    let errorMsg = '';
-    let redirectUrl = 'http://localhost:3000/login';
+    let mongoRes = await userCollection.findOne({'username': username})
+    if(mongoRes != null){
+        res.json({
+            success: false,
+            errorMsg: "Username taken",
+        });
+    }
+    else{
+        const newUserDoc = newUser(username, password, generateStreamKey(), profilePic)
+        let success = true;
+        let errorMsg = '';
+        let redirectUrl = 'http://localhost:3000/login';
 
-    //insert user
-    let mongoRes = await userCollection.insertOne(newUserDoc);
-
-    if (mongoRes === null || !mongoRes.acknowledged) {
-        success = false;
-        errorMsg = 'Signup failed';
-    } else {
-        //insert stream
-        let newStreamDoc = newStream(username, username + '\'s livestream', 'default', false, 0, [])
-        mongoRes = await streamCollection.insertOne(newStreamDoc);
+        //insert user
+        let mongoRes = await userCollection.insertOne(newUserDoc);
 
         if (mongoRes === null || !mongoRes.acknowledged) {
             success = false;
-            errorMsg = 'Stream creation failed';
+            errorMsg = 'Signup failed';
+        } else {
+            //insert stream
+            let newStreamDoc = newStream(username, username + '\'s livestream', 'default', false, 0, [])
+            mongoRes = await streamCollection.insertOne(newStreamDoc);
+
+            if (mongoRes === null || !mongoRes.acknowledged) {
+                success = false;
+                errorMsg = 'Stream creation failed';
+            }
         }
+
+        res.json({
+            success: success,
+            errorMsg: errorMsg,
+            redirectUrl: redirectUrl
+        });
     }
 
-    res.json({
-        success: success,
-        errorMsg: errorMsg,
-        redirectUrl: redirectUrl
-    });
+    
 });
 
 app.get('/login', (req, res) => {
