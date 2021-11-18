@@ -9,11 +9,39 @@ import { fileURLToPath } from 'url';
 import bodyParser from 'body-parser';
 import * as mongodb from 'mongodb';
 import * as dotenv from 'dotenv';
-import * as expressSession from 'express-session';
-import * as passport from 'passport';
-import Strategy from 'passport-local';
+import expressSession from 'express-session';
+import passport from 'passport';
+import LocalStrategy from 'passport-local';
 
 dotenv.config() //load env variables
+
+// Session configuration
+const session = {
+    secret : process.env.SECRET || 'SECRET', // set this encryption key in Heroku config (never in GitHub)!
+    resave : false,
+    saveUninitialized: false
+};
+
+//Passport config
+const strategy = new LocalStrategy(
+    async (username, password, done) => {
+        const database = client.db("spazz");
+        const user = database.collection("user");
+        var result = null;
+        try{
+            result = await user.findOne({"username": username});
+        } catch (e) {
+            console.error(e);
+            return done(null, false, { 'message' : 'Wrong username' });
+        } finally{
+            if(result != null && result.password == password){
+                return done(null, username);
+            }
+            else{
+                return done(null, false, { 'message' : 'Login failed' });
+            }
+        }
+    });
 
 /*
 express/webserver stuff
@@ -49,6 +77,21 @@ const httpPort = process.env.PORT || 3000;
 const __filename = fileURLToPath(import.meta.url);
 app.use(express.static('public'))
 
+app.use(expressSession(session));
+passport.use(strategy);
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Convert user object to a unique identifier.
+passport.serializeUser((user, done) => {
+    done(null, user);
+});
+// Convert a unique identifier to a user object.
+passport.deserializeUser((uid, done) => {
+    done(null, uid);
+});
+
+
 //app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.urlencoded({
     extended: true
@@ -79,7 +122,15 @@ try {
 // }
 
 
-
+function checkLoggedIn(req, res, next) {
+    if (req.isAuthenticated()) {
+	// If we are authenticated, run the next route.
+	next();
+    } else {
+	// Otherwise, redirect to the login page.
+	res.redirect('/login');
+    }
+}
 
 //user api
 app.get('/signup', (req, res) => {
@@ -120,38 +171,26 @@ app.get('/login', (req, res) => {
     res.sendFile(Path.join(__filename, '../public/views/login.html'));
 });
 
-app.post('/login', async (req, res) => {
-    //do auth login stuff here
-    const database = client.db("spazz");
-    const user = database.collection("user");
-    var result = null;
-
-    try{
-        result = await user.findOne({"username": req.body.username});
-    } catch (e) {
-        console.error(e);
+app.post('/login', passport.authenticate('local'),
+    function(req, res) { //only runs if authentication passes
         res.json({
-            success: false, //or false if failed
-            error: "Username invalid", //if failed fill this field with error msg to display
-            redirectUrl: ''
+            success: true, //or false if failed
+            error: faker.lorem.words(), //if failed fill this field with error msg to display
+            redirectUrl: 'http://localhost:3000/sports'
         });
-    } finally{
-        if(result != null && result.password == req.body.password){
-            res.json({
-                success: true,
-                error: faker.lorem.words(), //if failed fill this field with error msg to display
-                redirectUrl: 'http://localhost:3000/sports',
-            });
-        }
-        else{
-            res.json({
-                success: false,
-                error: "Login Failed", //if failed fill this field with error msg to display
-                redirectUrl: 'http://localhost:3000/sports',
-            });
-        }
-    }
-})
+});
+
+// Handle logging out (takes us back to the login page).
+app.get('/logout', (req, res) => {
+    req.logout(); // Logs us out!
+    res.redirect('/login'); // back to login
+});
+
+app.get('/private',
+	checkLoggedIn,
+	(req, res) => {
+	    res.send("hello world");
+});
 
 app.get('/user/info', (req, res) => {
 

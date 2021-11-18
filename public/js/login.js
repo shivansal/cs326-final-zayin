@@ -5,12 +5,12 @@ let statusMsg = document.getElementById('status-msg');
 
 function handleResponse(response) {
     statusMsg.className = '';
-    if (response.success) {
+    if (response.status == 200) {
         //perform redirect
         window.location.replace(response.redirectUrl);
     } else {
         //display the error message
-        statusMsg.innerText = 'Error: ' + response.error 
+        statusMsg.innerText = 'Error: login failed'
         statusMsg.classList.add('failed');
     }
 }
@@ -30,6 +30,6 @@ loginBtn.addEventListener('click', function() {
         }, 
         body: body}) //https://cs326-zayin.herokuapp.com/login
     .then(response => {
-        return response.json()
+        return response
     }).then(handleResponse)
 })
