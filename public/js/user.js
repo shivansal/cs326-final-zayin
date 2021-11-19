@@ -2,7 +2,8 @@ let currentUserName = document.getElementById('current-username');
 let currentTitle = document.getElementById('current-title');
 let currentCategory = document.getElementById('current-category');
 let streamKey = document.getElementById('stream-key');
-let statusMsg = document.getElementById('status-msg');
+let streamStatusMsg = document.getElementById('stream-status-msg');
+let userStatusMsg = document.getElementById('user-status-msg');
 let updateStreamBtn = document.getElementById('update-stream-btn');
 let newTitle = document.getElementById('new-title');
 let newCategory = document.getElementById('new-category');
@@ -12,36 +13,73 @@ let currentProfilePic = document.getElementById('profile-picture');
 let currentProfileUrl = document.getElementById('current-profileurl');
 let newProfileUrl = document.getElementById('new-profileurl');
 let updateUserBtn = document.getElementById('update-user-btn');
+let currentTitleHelp = document.getElementById('currentTitleHelp');
+let currentThumbHelp = document.getElementById('currentThumbHelp');
+let currentCategoryHelp = document.getElementById('currentCategoryHelp');
+let currentProfileUrlHelp = document.getElementById('currentProfileUrlHelp');
 
+
+console.log(newTitle)
+console.log(newStreamThumb)
+console.log(newCategory)
+
+console.log(currentTitleHelp)
+console.log(currentThumbHelp)
+console.log(currentCategoryHelp);
+
+loadSportsCategories();
+
+async function loadSportsCategories() {
+//<a class="dropdown-item" href="http://localhost:3000/user"></a></a>
+
+    const response = await fetch("http://localhost:3000/sports/get", {
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8',
+        }
+    });
+
+    let sportsArray = await response.json();
+    sportsArray = sportsArray.sports;
+    console.log(sportsArray)
+
+    for (const sport of sportsArray) {
+        let option = document.createElement('option');
+        option.innerText = sport.name;
+        newCategory.appendChild(option);
+    }
+}
 
 //handle the response by telling the user what happened
 //and updating the title and category on screen
 function handleUpdateStreamResponse(response, title, category, streamThumb) {
     console.log(response)
-    statusMsg.className = '';
+    streamStatusMsg.className = '';
     if (response.success) {
-        statusMsg.classList.add('success');
-        statusMsg.innerText = 'Successfully updated';
+        streamStatusMsg.classList.add('success');
+        streamStatusMsg.innerText = 'Successfully updated';
         currentTitle.innerText = title;
         currentCategory.innerText = category;
         currentStreamThumb.innerText = streamThumb;
-        console.log(streamThumb)
+        currentTitleHelp.innerText = "Current: " + title;
+        currentThumbHelp.innerText = "Current: " + category;
+        currentCategoryHelp.innerText = "Current: " + streamThumb;
     } else {
-        statusMsg.classList.add('failed');
-        statusMsg.innerText = 'Error: ' + response.error;
+        streamStatusMsg.classList.add('failed');
+        streamStatusMsg.innerText = 'Error: ' + response.error;
     }
 }
 
 function handleUpdateUserResponse(response, profilePic) {
-    statusMsg.className = '';
+    userStatusMsg.className = '';
     if (response.success) {
-        statusMsg.classList.add('success');
-        statusMsg.innerText = 'Successfully updated';
+        userStatusMsg.classList.add('success');
+        userStatusMsg.innerText = 'Successfully updated';
         currentProfileUrl.innerText = profilePic;
         currentProfilePic.src = profilePic;
+        currentProfileUrlHelp.innerText = 'Current: ' + profilePic;
     } else {
-        statusMsg.classList.add('failed');
-        statusMsg.innerText = 'Error: ' + response.error;
+        userStatusMsg.classList.add('failed');
+        userStatusMsg.innerText = 'Error: ' + response.error;
     }
 }   
 
@@ -85,7 +123,7 @@ updateUserBtn.addEventListener('click', function() {
 
 
     //send post to /stream/update endpoint
-    fetch('https://cs326-zayin.herokuapp.com/user/update', {method: 'POST', body: body, headers: headers})
+    fetch('http://localhost:3000/user/update', {method: 'POST', body: body, headers: headers})
     .then(response => {
         return response.json();
     }).then(function(response) {
@@ -106,7 +144,11 @@ function getUserInfo() {
         currentTitle.innerText = response.stream_title;
         currentCategory.innerText = response.stream_category;
         currentStreamThumb.innerText = response.stream_thumbnail;
-        streamKey.innerText = response.stream_key;
+        streamKey.innerText = response.username + '?key=' + response.stream_key;
+        currentTitleHelp.innerText = "Current: " + response.stream_title;
+        currentThumbHelp.innerText = "Current: " + response.stream_thumbnail;
+        currentCategoryHelp.innerText = "Current: " + response.stream_category;
+
     });
 
     

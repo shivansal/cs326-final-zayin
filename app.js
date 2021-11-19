@@ -346,11 +346,16 @@ app.get('/stream/browse', (req, res) => { // /stream/browse?category=basketball
 //sports api
 app.get('/sports/get', async (req, res) => {
     let sports = await sportCollection.find().toArray();
-    let fakeRes = {
-        sports: sports
-    };
 
-    res.json(fakeRes);
+    if (sports) {
+        res.json({
+            sports: sports
+        });
+    } else {
+        res.json({
+            sports: []
+        });
+    }
 });
 
 app.get('/sports', (req, res) => {

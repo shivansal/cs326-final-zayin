@@ -25,16 +25,24 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active nav-left-item">
-                    <a class="nav-link" href="/sports">Sports<span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="#">Sports<span class="sr-only">(current)</span></a>
                 </li>
+
+                <li class="nav-item active nav-left-item dropdown show">
+                    <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Browse</a>
+                    <div class="dropdown-menu" aria-labelledby="userInfo" id="browse-dropdown">
+                    </div>
+                </li>
+                
             </ul>
+            
             <ul class="navbar-nav sm-auto">
                 <div class="dropdown show">
                     <a class="nav-item active dropdown-toggle hidden" role="button" id="userInfo" data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">
                     </a>
                     <div class="dropdown-menu" aria-labelledby="userInfo" id="userInfo-dropdown">
-                        <a class="dropdown-item" href="http://localhost:3000/user" style=>Profile</a>
+                        <a class="dropdown-item" href="http://localhost:3000/user">Profile</a>
                         <a class="dropdown-item" href="http://localhost:3000/logout">Logout</a>
                     </div>
                 </div>

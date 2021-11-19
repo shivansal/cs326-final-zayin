@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -13,6 +14,7 @@
     <link rel="stylesheet" href="/stylesheets/user.css">
     <link rel="stylesheet" href="/stylesheets/global.css">
 </head>
+
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm navbar-custom" id="top-nav">
         <a class="navbar-brand" href="#">
@@ -25,19 +27,24 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active nav-left-item">
-                    <a class="nav-link" href="http://localhost:3000/sports">Sports<span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="#">Sports<span class="sr-only">(current)</span></a>
                 </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="#">Popular <span class="sr-only">(current)</span></a>
+
+                <li class="nav-item active nav-left-item dropdown show">
+                    <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Browse</a>
+                    <div class="dropdown-menu" aria-labelledby="userInfo" id="browse-dropdown">
+                    </div>
                 </li>
+
             </ul>
+
             <ul class="navbar-nav sm-auto">
                 <div class="dropdown show">
                     <a class="nav-item active dropdown-toggle hidden" role="button" id="userInfo" data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">
                     </a>
                     <div class="dropdown-menu" aria-labelledby="userInfo" id="userInfo-dropdown">
-                        <a class="dropdown-item" href="http://localhost:3000/user" style=>Profile</a>
+                        <a class="dropdown-item" href="http://localhost:3000/user">Profile</a>
                         <a class="dropdown-item" href="http://localhost:3000/logout">Logout</a>
                     </div>
                 </div>
@@ -54,20 +61,43 @@
                 <h2>Your Profile</h2>
                 <img src="/img/thumbnail.jpeg" alt="" height="250" id="profile-picture" />
                 <p class="user-info">
-                    Username:  <span id="current-username"></span>
+                    Username: <span id="current-username"></span>
                 </p>
-                
+
                 <p class="user-info">
                     Profile picture URL: <span id="current-profileurl"></span>
                 </p>
-                <div class="input-group">
-                    <input type="text" class="form-control input-group-text" id="new-profileurl"
-                        placeholder="Change profile picture url">
-                </div>
-                <div class="form-group">
-                    <button type="button" class="btn btn-primary btn-block" id="update-user-btn">Update User!</button>
-                </div>
-               
+                <!-- Modal -->
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#userModal">
+                    Configure Your Profile
+                </button>
+                <div class="modal fade modal-dark" id="userModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="new-profileurl">Profile Picture URL</label>
+                                <input type="text" class="form-control" id="new-profileurl" aria-describedby="currentProfileUrlHelp" placeholder="Enter Title">
+                                <small id="currentProfileUrlHelp" class="form-text text-muted">Current: blahblah.png</small>
+                              </div>
+                        </div>
+                        <div class="modal-footer">
+                        <p id="user-status-msg"></p>
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                          <button type="button" class="btn btn-primary" id="update-user-btn">Save changes</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                
                 <h2>Your stream details</h2>
                 <p class="user-info">
                     Stream Title: <span id="current-title">Playing dem sportsz</span>
@@ -81,26 +111,52 @@
                 <p class="user-info">
                     Stream thumbnail URL: <span id="stream-thumb"></span>
                 </p>
-                <form>
-                    <div class="input-group">
-                        <input type="text" class="form-control input-group-text" id="new-title"
-                            placeholder="Change stream title">
-                    </div>
-                    <div class="input-group">
-                        <input type="text" class="form-control input-group-text" id="new-category"
-                            placeholder="Change stream category">
-                    </div>
-                    <div class="input-group">
-                        <input type="text" class="form-control input-group-text" id="new-stream-thumb"
-                            placeholder="Change stream thumbnail">
-                    </div>
-                    <div class="form-group">
-                        <button type="button" class="btn btn-primary btn-block" id="update-stream-btn">Update Stream!</button>
-                    </div>
-                    <p id="status-msg"></p>
-                </form>
             </div>
         </div>
+        <!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+    Configure Your Stream
+  </button>
+  
+  <!-- Modal -->
+  <div class="modal fade modal-dark" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Update Your Stream</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <form>
+                <div class="form-group">
+                  <label for="new-title">Stream Title</label>
+                  <input type="text" class="form-control" id="new-title" aria-describedby="titleHelp" placeholder="Enter Title">
+                  <small id="titleHelp" class="form-text text-muted">2-20 characters long</small>
+                  <small id="currentTitleHelp" class="form-text text-muted">Current: Idiot's stream</small>
+                </div>
+                <div class="form-group">
+                    <label for="new-stream-thumb">Stream Thumbnail URL</label>
+                    <input type="text" class="form-control" id="new-stream-thumb" aria-describedby="streamThumbHelp" placeholder="Enter Title">
+                    <small id="currentThumbHelp" class="form-text text-muted">Current: blahblah.png</small>
+                  </div>
+                <div class="form-group">
+                    <label for="new-category">Stream Category</label>
+                    <select id="new-category" class="form-control">
+                    </select>
+                    <small id="currentCategoryHelp" class="form-text text-muted">Current: Basketball</small>
+                </div>
+              </form>
+        </div>
+        <p id="stream-status-msg"></p>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" id="update-stream-btn">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
@@ -115,4 +171,5 @@
     <script src="/js/user.js"></script>
     <script src="/js/navbar.js"></script>
 </body>
+
 </html>

@@ -13,7 +13,7 @@ async function getAndRenderSports() {
     sportsArray = await response.json();
     sportsArray = sportsArray.sports;
     console.log(sportsArray);
-    for (let i = 0; i < sportsArray.length; i++) {
+    for (const sport of sportsArray) {
         const sportsDiv = document.createElement('div');
         sportsDiv.classList.add('col-xl-3');
         sportsDiv.classList.add('col-md-6');
@@ -24,14 +24,14 @@ async function getAndRenderSports() {
         const thumbnailDiv = document.createElement('div');
         thumbnailDiv.classList.add('thumbnail-container');
         thumbnailDiv.addEventListener('click', () => {
-            window.location.href = "/stream/browse?category=" + sportsArray[i].name;
+            window.location.href = "/stream/browse?category=" + sport.name;
         });
 
         const sportsImage = document.createElement('img');
         sportsImage.classList.add('stream-thumbnail');
         sportsImage.setAttribute('height', '250');
         sportsImage.setAttribute('alt', 'stream thumbnail');
-        sportsImage.setAttribute('src', sportsArray[i].image);
+        sportsImage.setAttribute('src', sport.image);
 
         const sportsInfo = document.createElement('div');
         sportsInfo.classList.add('stream-info-container');
@@ -39,7 +39,7 @@ async function getAndRenderSports() {
         const streamName = document.createElement('div');
         streamName.classList.add('stream-data');
         streamName.classList.add('category-name');
-        streamName.innerHTML = sportsArray[i].name;
+        streamName.innerHTML = sport.name;
 
         sportsInfo.appendChild(streamName);
         thumbnailDiv.appendChild(sportsImage);

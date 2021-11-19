@@ -25,3 +25,7 @@ body {
 .hidden {
     visibility: hidden;
 }
+
+.modal-dark {
+    color: #121319;
+}
