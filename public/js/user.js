@@ -96,7 +96,7 @@ updateUserBtn.addEventListener('click', function() {
 
 function getUserInfo() {
     //send post to /stream/update endpoint
-    fetch('https://cs326-zayin.herokuapp.com/user/info')
+    fetch('http://localhost:3000/user/info') //https://cs326-zayin.herokuapp.com/user/info
     .then(response => {
         return response.json();
     }).then(function(response) {

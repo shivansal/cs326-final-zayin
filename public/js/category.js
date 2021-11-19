@@ -26,7 +26,12 @@ function handleResponse(response) {
         streamImage.classList.add('stream-thumbnail');
         streamImage.setAttribute('height', '250');
         streamImage.setAttribute('alt', 'stream thumbnail');
-        streamImage.setAttribute('src', x.image);
+        if(x.image == "default" || !String(x).startsWith("https://")){
+            streamImage.setAttribute('src', "../img/thumbnail.jpeg");
+        }
+        else{
+            streamImage.setAttribute('src', x.image);
+        }
 
         const streamInfo = document.createElement('div');
         streamInfo.classList.add('stream-info-container');
