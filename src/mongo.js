@@ -12,6 +12,7 @@ export async function mongoInit(uri, cb) {
         client: client,
         userCollection: database.collection("user"),
         streamCollection: database.collection("stream"),
+        sportCollection: database.collection("sport")
     });
 }
 

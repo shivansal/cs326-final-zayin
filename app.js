@@ -22,11 +22,14 @@ dotenv.config();
 let client = null;
 let userCollection = null;
 let streamCollection = null;
+let sportCollection = null;
+
 
 mongoInit(process.env.MONGO_URL, (stuff) => {
     client = stuff.client;
     userCollection = stuff.userCollection;
     streamCollection = stuff.streamCollection;
+    sportCollection = stuff.sportCollection;
     rtmpInit(userCollection, streamCollection);
     chatInit(server, sessionMiddleware, streamCollection);
 });
@@ -279,12 +282,35 @@ app.get('/user', checkLoggedIn, (req, res) => {
 });
 
 //stream api
-app.post('/stream/update', (req, res) => {
-
-    //verify title and category
-    res.json({
-        success: true //or false if failed
-    });
+app.post('/stream/update', async (req, res) => {
+    // console.log(req.body)
+    let category = (req.body.category).trim().toLowerCase();
+    let mongoRes = await sportCollection.findOne({'name': category})
+  
+    // console.log(req.user)
+    if(mongoRes == null){
+        res.json({
+            success: false,//or false if failed
+            error: "Not a valid category"
+        });
+    }
+    else{
+        let newObj = {}
+    
+        if(req.body.title.length != 0){
+            newObj["title"] = req.body.title
+        }
+        if(req.body.category.length != 0){
+            newObj["category"] = req.body.category
+        }
+        if(req.body.thumbnail.length != 0){
+            newObj["thumbnail"] = req.body.thumbnail
+        }
+        let updateRes = await streamCollection.updateOne({"username": req.user.username}, {$set: newObj});
+        res.json({
+            success: true //or false if failed
+        });
+    }
 });
 
 app.post('/stream/get', async (req, res) => {
