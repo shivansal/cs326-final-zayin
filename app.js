@@ -11,6 +11,7 @@ import dotenv from 'dotenv'
 import expressSession from 'express-session';
 import passport from 'passport';
 import LocalStrategy from 'passport-local';
+import crypto from 'crypto';
 
 import { generateStreamKey, newUser } from './src/user.js';
 import {newStream} from './src/stream.js';
@@ -54,8 +55,10 @@ const strategy = new LocalStrategy(
             if (!user) {
                 return done(null, false, {message: "Wrong username"});
             }
+            let salt = user.salt
+            let hash = crypto.pbkdf2Sync(password, salt, 1000, 64, `sha512`).toString(`hex`);
 
-            if (password !== user.password) {
+            if (hash !== user.hash) {
                 return done(null, false, {mesagge: "Wrong password"});
             }
 
@@ -147,6 +150,7 @@ app.post('/signup', async (req, res) => {
     const streamKey = "nothing";
     const profilePic = "default";
 
+    
     //validate username, password
     //generate stream key, set default profile
 
@@ -158,7 +162,9 @@ app.post('/signup', async (req, res) => {
         });
     }
     else{
-        const newUserDoc = newUser(username, password, generateStreamKey(), profilePic)
+        let salt = crypto.randomBytes(16).toString('hex')
+        let hash = crypto.pbkdf2Sync(password, salt, 1000, 64, `sha512`).toString(`hex`);
+        const newUserDoc = newUser(username, hash, salt, generateStreamKey(), profilePic)
         let success = true;
         let errorMsg = '';
         let redirectUrl = 'http://localhost:3000/login';
