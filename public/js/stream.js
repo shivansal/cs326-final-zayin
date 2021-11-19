@@ -4,17 +4,18 @@ const username = getUsernameFromPath(window.location.href);
 const streamPlayer = document.getElementById('stream-player');
 let currentlyLive = false;
 let flvPlayer = null;
+let socket = null;
+
 
 function getUsernameFromPath(path) {
     let parts = path.split('/');
     return parts[parts.length - 1];
 }
 
-let socket = io('/chat', {
-    query: {
-        'streamer_name': username
-    }
-});
+function updateStreamData(viewers, title) {
+    document.getElementById('current-viewers').innerText = viewers;
+    document.getElementById('stream-title').innerText = title;
+}
 
 function addChatMsg(senderUsername, message) {
     /*
@@ -23,6 +24,8 @@ function addChatMsg(senderUsername, message) {
         <span class="chat-message">asdas </span>
     </div> 
     */
+
+    let shouldScroll = chatBox.scrollTop + chatBox.clientHeight === chatBox.scrollHeight;
 
     //construct new chat element
     let newChatContainer = document.createElement('div');
@@ -37,25 +40,33 @@ function addChatMsg(senderUsername, message) {
     newChatContainer.append(newMsg);
 
     //set contents
-    newUsername.innerText = '@' + username + ': ';
+    newUsername.innerText = '@' + senderUsername + ': ';
     newMsg.innerText = message;
 
     chatBox.append(newChatContainer)
+
+    if (shouldScroll) {
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+}
+
+function chatConnect() {
+    socket = io('http://localhost:3000/chat', {
+        query: {
+            'streamer_username': username
+        }
+    });
+}
+
+function clearChat() {
+    chatBox.innerHTML = '';
 }
 
 //fetch the chat log and display it
-function loadChatMessages() {
-    let body = JSON.stringify({
-        username: streamerName
-    });
-    
-    fetch('https://cs326-zayin.herokuapp.com/stream/get', {method: "POST", body: body})
-    .then(response => {
-        return response.json()
-    }).then(function(response) {
-        response.streams[0].chat.forEach(msgPair => {
-            addChatMsg(msgPair.username, msgPair.msg)
-        });
+function loadChatMessages(messageObjs) {   
+    clearChat();
+    messageObjs.forEach(messageObj => {
+        addChatMsg(messageObj.username, messageObj.msg)
     });
 }
 
@@ -93,8 +104,13 @@ async function pollStream(username, next) {
     }) 
 
     let jsonResponse = await response.json();
-    console.log(jsonResponse)
-    next(jsonResponse && jsonResponse.streams[0].live);
+    console.log('viewers', jsonResponse.streams[0].viewers)
+
+    if (jsonResponse) {
+        next(jsonResponse.streams[0]);
+    } else {
+        next(null);
+    }
 }
 
 function setupPlayer() {
@@ -122,8 +138,15 @@ function setLiveIndicator(live) {
     liveIndicator.innerText = text;
 }
 
-function handlePollResponse(isLive) {
+function handlePollResponse(stream) {
+    let isLive = false;
+    if (stream) {
+        isLive = stream.live;
+        updateStreamData(stream.viewers, stream.title)
+    }
+
     setLiveIndicator(isLive);
+
     if (isLive && !currentlyLive) {
         currentlyLive = true
         //flvPlayer.play();
@@ -133,8 +156,17 @@ function handlePollResponse(isLive) {
 }
 
 window.onload = function() {
-    /*loadChatMessages();
+    chatConnect();
+
+    socket.on('loadMessages', (messageObjs) => {
+        loadChatMessages(messageObjs);
+    });
+
+    
+
+    socket.emit('getMessages');
     socket.on('chatMessage', onChatMessage);
+    
     sendBtn.addEventListener('click', onSendClicked);
     document.addEventListener('keypress', function(e) {
         if (e.code === 'Enter') {
@@ -142,7 +174,7 @@ window.onload = function() {
             onSendClicked();
         }
             
-    });*/
+    });
     setupPlayer()
     //poll right away
     pollStream(username, handlePollResponse);

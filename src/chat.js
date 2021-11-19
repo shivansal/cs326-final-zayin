@@ -1,29 +1,118 @@
 import faker from 'faker';
 import { Server } from "socket.io";
 
-export default function chatInit(httpServer) {
+function getUserFromSocket(socket) {
+    try {
+        return socket.request.session.passport.user;
+    } catch (e) { }
+
+    return null;
+}
+
+async function addChatMsg(msg, senderUsername, streamUsername, streamCollection) {
+    return streamCollection.updateOne({username: streamUsername}, {
+        $push: {
+            chat: {
+                msg: msg,
+                username: senderUsername,
+            }
+        }
+    });
+}
+
+async function incrementViewers(username, streamCollection, amount) {
+    return streamCollection.updateOne({username: username}, {
+        $inc: {
+            viewers: amount
+        }
+    })
+}
+
+async function resetViewers(streamCollection) {
+    return streamCollection.updateMany({}, {
+        $set: {
+            viewers: 0
+        }
+    });
+}
+
+export default async function chatInit(httpServer, sessionMiddleware, streamCollection) {
+    await resetViewers(streamCollection);
     const io = new Server(httpServer, {});
-    
+    //io.use();
+
     //create namespace
     const chatNamespace = io.of('/chat');
-    chatNamespace.on('connection', (socket) => {
-            //socket.handshake.query["streamer_name"] use this to verify
+    chatNamespace.use(function (socket, next) {
+        sessionMiddleware(socket.request, {}, next);
+    })
 
-            //need to do some auth here also
-            //cant chat unless authorized but can still see messages
+    chatNamespace.on('connection', async (socket) => {
+        let user = getUserFromSocket(socket);
+        let streamerUserName = socket.handshake.query["streamer_username"];
 
-            socket.on('chatMessage', (msg) => {
-                //we would actually emit to an entire room of sockets
-                //but this is just a dummy endpoint right now so it doesnt matter
-               socket.emit('chatMessage', { 
-                   username: faker.name.firstName(),
-                   msg: faker.lorem.words(),
-               });
+        let streamDoc = await streamCollection.findOne({
+            username: streamerUserName
+        });
+
+        if (!streamDoc) {
+            //fuck off
+            console.log('stream doc not found fuck off');
+            socket.disconnect();
+            return;
+        }
+
+        if (user && streamerUserName) {
+            console.log(user.username + " has joined", streamDoc.username + '\'s chat room');
+        } else {
+            console.log('GUEST has joined', streamDoc.username + '\'s chat room');
+        }
+
+        //increment viewers
+        incrementViewers(streamerUserName, streamCollection, 1);
+
+        //join chatroom
+        let chatRoomId = '$chatRoom:' + streamDoc.username;
+        socket.join(chatRoomId);
+
+        //send the current messages
+        socket.emit('loadMessages', streamDoc.chat);
+
+        //if the user is authenticated
+        if (user) {
+            console.log('user is authenticated')
+            //fires when this specific socket sends message
+            socket.on('chatMessage', async (msgObj) => {
+                //console.log(msg, username)
+                chatNamespace.to(chatRoomId).emit('chatMessage', {
+                    username: user.username,
+                    msg: msgObj.msg,
+                });
+
+                await addChatMsg(msgObj.msg, user.username, streamerUserName, streamCollection);
+            });
+        }
+
+        socket.on('disconnect', () => {
+            //decrement viewers somehow
+            incrementViewers(streamerUserName, streamCollection, -1);
+        });
+
+        socket.on('getMessages', async () => {
+            console.log('yo')
+            let streamDoc = await streamCollection.findOne({
+                username: streamerUserName
             });
 
-            socket.on('disconnect', () => {
-                //decrement viewers somehow
-            });
-        
+            if (streamDoc) {
+                socket.emit('loadMessage', streamDoc.chat);
+            } else {
+                socket.emit('loadMessage', []);
+            }
+        })
+
+       
+
+
     });
 }

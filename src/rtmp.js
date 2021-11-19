@@ -25,7 +25,7 @@ export default function rtmpInit(userCollection, streamCollection) {
         if ('key' in args) {
             let username = getUserFromStreamPath(StreamPath);
             let streamKey = args.key
-
+            
             userCollection.findOne({ username: username, stream_key: streamKey }, function (err, res) {
                 if (err || res === null) {
                     session.reject();
