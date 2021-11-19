@@ -3,7 +3,7 @@ import NodeMediaServer from 'node-media-server';
 export default function rtmpInit(userCollection, streamCollection) {
     const config = {
         rtmp: {
-            port: process.env.PORT,
+            port: 1935,
             chunk_size: 60000,
             gop_cache: true,
             ping: 30,
