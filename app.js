@@ -242,14 +242,16 @@ app.get('/private',
 
 app.get('/user/info', (req, res) => {
     if (req.isAuthenticated()) {
+        console.log(req.user)
         let fakeRes = {
             success: true,
-            username: faker.name.firstName(),
-            password: faker.lorem.words(),
-            stream_key: faker.lorem.words(),
+            username: req.user.username,
+            salt: req.user.salt,
+            hash: req.user.hash,
+            stream_key: req.user.stream_key,
             stream_title: faker.lorem.words(),
             stream_category: faker.lorem.words(),
-            profilepic: faker.image.animals(),
+            profilepic: req.user.profilepic,
             stream_thumbnail: faker.image.sports(),
         }
 
