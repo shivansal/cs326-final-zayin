@@ -13,6 +13,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/stylesheets/styles.css">
     <link rel="stylesheet" href="/stylesheets/stream.css">
+    <link rel="stylesheet" href="/stylesheets/global.css">
 </head>
 
 <body>
@@ -34,9 +35,18 @@
                 </li>
             </ul>
             <ul class="navbar-nav sm-auto">
+                <div class="dropdown show">
+                    <a class="nav-item active dropdown-toggle" role="button" id="userInfo" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="userInfo" id="userInfo-dropdown">
+                        <a class="dropdown-item" href="http://localhost:3000/user" style=>Profile</a>
+                        <a class="dropdown-item" href="http://localhost:3000/logout">Logout</a>
+                    </div>
+                </div>
                 <li class="nav-item active">
-                    <button type="button" id="signin-btn" class="btn btn-light">Sign in <i
-                            class="far fa-user"></i></button>
+                    <a href="/login"><button type="button" id="signin-btn" class="btn btn-light">Sign in <i
+                                class="far fa-user"></i></button></a>
                 </li>
             </ul>
         </div>
@@ -57,14 +67,14 @@
                         <div class="stream-info-container">
                             <p class="stream-title" id="stream-title"></p>
                             <p class="stream-data" id="streamer-username"></p>
-                            <p class="stream-data">Current Viewers: <span id="current-viewers"></span></p>
-                            <p class="stream-data">Status: <span class="stream-data-red" id="live-indicator">NOT LIVE</span></p>
+                            <p class="stream-data">Viewers: <span id="current-viewers"></span></p>
+                            <p class="stream-data">Status: <span class="stream-data-red" id="live-indicator">NOT
+                                    LIVE</span></p>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-12">
                     <br> Chat
-                    <br>
                     <div id="chat-box"></div>
                     <label for="chat-input" class="form-label">Type your message</label>
                     <textarea class="form-control" rows="3" id="chat-input"></textarea>
@@ -89,5 +99,7 @@
     <script src="https://cdn.bootcss.com/flv.js/1.5.0/flv.min.js"></script>
     <!-- <script src="/js/testing>1.js"></script> -->
     <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/navBar.js"></script>
 </body>
+
 </html>

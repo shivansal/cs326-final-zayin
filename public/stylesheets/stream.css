@@ -11,11 +11,10 @@
     display: flex;
     flex-flow: column;
     background-color: rgba(255, 255, 255, 0.774);
-    border-radius: 10px;
     border-color: grey;
     border-width: 2px;
     padding: 5px;
-    height: 350px;
+    height: 450px;
 }
 
 .chat-username {

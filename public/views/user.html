@@ -11,6 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/stylesheets/global.css">
     <link rel="stylesheet" href="/stylesheets/user.css">
+    <link rel="stylesheet" href="/stylesheets/global.css">
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm navbar-custom" id="top-nav">
@@ -31,9 +32,18 @@
                 </li>
             </ul>
             <ul class="navbar-nav sm-auto">
+                <div class="dropdown show">
+                    <a class="nav-item active dropdown-toggle" role="button" id="userInfo" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="userInfo" id="userInfo-dropdown">
+                        <a class="dropdown-item" href="http://localhost:3000/user" style=>Profile</a>
+                        <a class="dropdown-item" href="http://localhost:3000/logout">Logout</a>
+                    </div>
+                </div>
                 <li class="nav-item active">
-                    <button type="button" id="signin-btn" class="btn btn-light">Sign in <i
-                            class="far fa-user"></i></button>
+                    <a href="/login"><button type="button" id="signin-btn" class="btn btn-light">Sign in <i
+                                class="far fa-user"></i></button></a>
                 </li>
             </ul>
         </div>
@@ -103,5 +113,6 @@
         crossorigin="anonymous"></script>
     <script src="https://kit.fontawesome.com/22d0831876.js" crossorigin="anonymous"></script>
     <script src="/js/user.js"></script>
+    <script src="/js/navbar.js"></script>
 </body>
 </html>

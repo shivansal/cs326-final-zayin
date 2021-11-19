@@ -13,3 +13,11 @@ body {
     background-color: black !important;
     text-align: left;
 }
+
+#userInfo {
+    margin-right: 45px;
+}
+
+.dropdown-menu {
+    min-width: 0.25rem;
+}

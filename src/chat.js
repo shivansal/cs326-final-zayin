@@ -25,7 +25,7 @@ async function incrementViewers(username, streamCollection, amount) {
         $inc: {
             viewers: amount
         }
-    })
+    });
 }
 
 async function resetViewers(streamCollection) {
@@ -45,7 +45,7 @@ export default async function chatInit(httpServer, sessionMiddleware, streamColl
     const chatNamespace = io.of('/chat');
     chatNamespace.use(function (socket, next) {
         sessionMiddleware(socket.request, {}, next);
-    })
+    });
 
     chatNamespace.on('connection', async (socket) => {
         let user = getUserFromSocket(socket);
@@ -57,7 +57,6 @@ export default async function chatInit(httpServer, sessionMiddleware, streamColl
 
         if (!streamDoc) {
             //fuck off
-            console.log('stream doc not found fuck off');
             socket.disconnect();
             return;
         }
@@ -83,7 +82,6 @@ export default async function chatInit(httpServer, sessionMiddleware, streamColl
             console.log('user is authenticated')
             //fires when this specific socket sends message
             socket.on('chatMessage', async (msgObj) => {
-                //console.log(msg, username)
                 chatNamespace.to(chatRoomId).emit('chatMessage', {
                     username: user.username,
                     msg: msgObj.msg,
@@ -94,12 +92,11 @@ export default async function chatInit(httpServer, sessionMiddleware, streamColl
         }
 
         socket.on('disconnect', () => {
-            //decrement viewers somehow
+            //decrement viewers
             incrementViewers(streamerUserName, streamCollection, -1);
         });
 
         socket.on('getMessages', async () => {
-            console.log('yo')
             let streamDoc = await streamCollection.findOne({
                 username: streamerUserName
             });
@@ -109,10 +106,6 @@ export default async function chatInit(httpServer, sessionMiddleware, streamColl
             } else {
                 socket.emit('loadMessage', []);
             }
-        })
-
-       
-
-
+        });
     });
 }

@@ -162,8 +162,6 @@ window.onload = function() {
         loadChatMessages(messageObjs);
     });
 
-    
-
     socket.emit('getMessages');
     socket.on('chatMessage', onChatMessage);
     

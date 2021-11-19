@@ -11,6 +11,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/stylesheets/styles.css">
+    <link rel="stylesheet" href="/stylesheets/global.css">
 </head>
 
 <body>
@@ -28,8 +29,19 @@
                 </li>
             </ul>
             <ul class="navbar-nav sm-auto">
-                <div class="nav-item active" id="userInfo">
+                <div class="dropdown show">
+                    <a class="nav-item active dropdown-toggle" role="button" id="userInfo" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="userInfo" id="userInfo-dropdown">
+                        <a class="dropdown-item" href="http://localhost:3000/user" style=>Profile</a>
+                        <a class="dropdown-item" href="http://localhost:3000/logout">Logout</a>
+                    </div>
                 </div>
+                <li class="nav-item active">
+                    <a href="/login"><button type="button" id="signin-btn" class="btn btn-light">Sign in <i
+                                class="far fa-user"></i></button></a>
+                </li>
             </ul>
         </div>
     </nav>
@@ -69,7 +81,6 @@
             </div> -->
         </div>
     </div>
-    <script src="/js/navBar.js"></script>
     <script src="/js/navBar.js"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
