@@ -18,8 +18,29 @@ function handleResponse(response) {
 
 signupBtn.addEventListener('click', function() {
     //do clientside validation
+
     if(password.value !== confirmPassword.value){
         statusMsg.innerText = "Error: passwords don't match"
+        statusMsg.classList.add('failed');
+    }
+    else if(password.value.length < 4){
+        statusMsg.innerText = "Error: password too short"
+        statusMsg.classList.add('failed');
+    }
+    else if(password.value.length > 20){
+        statusMsg.innerText = "Error: password too long"
+        statusMsg.classList.add('failed');
+    }
+    else if((String(username.value).match("^[a-zA-Z0-9]*$")) == null){
+        statusMsg.innerText = "Error: username not valid"
+        statusMsg.classList.add('failed');
+    }
+    else if(username.value.length < 4){
+        statusMsg.innerText = "Error: username too short"
+        statusMsg.classList.add('failed');
+    }
+    else if(username.value.length > 12){
+        statusMsg.innerText = "Error: username too long"
         statusMsg.classList.add('failed');
     }
     else{
