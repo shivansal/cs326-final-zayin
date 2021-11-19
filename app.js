@@ -240,19 +240,19 @@ app.get('/private',
 	    res.send("hello world");
 });
 
-app.get('/user/info', (req, res) => {
+app.get('/user/info', async (req, res) => {
     if (req.isAuthenticated()) {
-        console.log(req.user)
+        let mongoRes = await streamCollection.findOne({'username': req.user.username});
         let fakeRes = {
             success: true,
             username: req.user.username,
             salt: req.user.salt,
             hash: req.user.hash,
             stream_key: req.user.stream_key,
-            stream_title: faker.lorem.words(),
-            stream_category: faker.lorem.words(),
+            stream_title: mongoRes.title,
+            stream_category: mongoRes.category,
             profilepic: req.user.profilepic,
-            stream_thumbnail: faker.image.sports(),
+            stream_thumbnail: mongoRes.thumbnail,
         }
 
         res.json(fakeRes);
