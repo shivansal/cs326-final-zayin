@@ -5,7 +5,7 @@ getAndRenderSports();
 
 async function getAndRenderSports() {
     //https://cs326-zayin.herokuapp.com/sports/get
-    const response = await fetch("http://localhost:3000/sports/get", {
+    const response = await fetch(window.URL_BASE + "/sports/get", {
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
         }

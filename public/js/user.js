@@ -32,7 +32,7 @@ loadSportsCategories();
 async function loadSportsCategories() {
 //<a class="dropdown-item" href="http://localhost:3000/user"></a></a>
 
-    const response = await fetch("http://localhost:3000/sports/get", {
+    const response = await fetch(window.URL_BASE + '/sports/get', {
         headers: {
             'Content-Type': 'application/json;charset=utf-8',
         }
@@ -61,8 +61,8 @@ function handleUpdateStreamResponse(response, title, category, streamThumb) {
         currentCategory.innerText = category;
         currentStreamThumb.innerText = streamThumb;
         currentTitleHelp.innerText = "Current: " + title;
-        currentThumbHelp.innerText = "Current: " + category;
-        currentCategoryHelp.innerText = "Current: " + streamThumb;
+        currentThumbHelp.innerText = "Current: " + streamThumb;
+        currentCategoryHelp.innerText = "Current: " + category;
     } else {
         streamStatusMsg.classList.add('failed');
         streamStatusMsg.innerText = 'Error: ' + response.error;
@@ -99,14 +99,13 @@ updateStreamBtn.addEventListener('click', function() {
     });
 
     //send post to /stream/update endpoint
-    fetch('http://localhost:3000/stream/update', {method: 'POST', body: body, headers: headers}) //https://cs326-zayin.herokuapp.com/stream/update
+    fetch(window.URL_BASE + '/stream/update', {method: 'POST', body: body, headers: headers}) //https://cs326-zayin.herokuapp.com/stream/update
     .then(response => {
         return response.json();
     }).then(function(response) {
         handleUpdateStreamResponse(response, title, category, streamThumb)
     });
-
-})
+});
 
 updateUserBtn.addEventListener('click', function() {
     //get the title and category to set
@@ -119,11 +118,8 @@ updateUserBtn.addEventListener('click', function() {
        profilepic: profilePic
     });
 
-    
-
-
     //send post to /stream/update endpoint
-    fetch('http://localhost:3000/user/update', {method: 'POST', body: body, headers: headers})
+    fetch(window.URL_BASE + '/user/update', {method: 'POST', body: body, headers: headers})
     .then(response => {
         return response.json();
     }).then(function(response) {
@@ -134,7 +130,7 @@ updateUserBtn.addEventListener('click', function() {
 
 function getUserInfo() {
     //send post to /stream/update endpoint
-    fetch('http://localhost:3000/user/info') //https://cs326-zayin.herokuapp.com/user/info
+    fetch(window.URL_BASE + '/user/info') //https://cs326-zayin.herokuapp.com/user/info
     .then(response => {
         return response.json();
     }).then(function(response) {
@@ -150,9 +146,6 @@ function getUserInfo() {
         currentCategoryHelp.innerText = "Current: " + response.stream_category;
 
     });
-
-    
-
 }
 
 window.onload = getUserInfo;

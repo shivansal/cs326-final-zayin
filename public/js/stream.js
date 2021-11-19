@@ -51,7 +51,7 @@ function addChatMsg(senderUsername, message) {
 }
 
 function chatConnect() {
-    socket = io('http://localhost:3000/chat', {
+    socket = io(window.URL_BASE + '/chat', {
         query: {
             'streamer_username': username
         }
@@ -94,7 +94,7 @@ async function pollStream(username, next) {
         username: username
     });
 
-    let response = await fetch('http://localhost:3000/stream/get', { //https://cs326-zayin.herokuapp.com/stream/get
+    let response = await fetch(window.URL_BASE + '/stream/get', { //https://cs326-zayin.herokuapp.com/stream/get
         method: "POST", 
         headers: {
             'Accept': 'application/json',

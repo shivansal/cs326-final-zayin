@@ -23,13 +23,13 @@ loginBtn.addEventListener('click', function() {
         password: password.value,
     });
     
-    fetch('http://localhost:3000/login', {
+    fetch(window.URL_BASE + '/login', {
         method: "POST", 
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         }, 
-        body: body}) //https://cs326-zayin.herokuapp.com/login
+        body: body})
         .then(response => {
             return response.json();
         }).then(function(response) {

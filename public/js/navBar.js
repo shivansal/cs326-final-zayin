@@ -4,7 +4,7 @@ const userBox = document.getElementById("userInfo");
 
 async function getUserInfo() {
     //https://cs326-zayin.herokuapp.com/user/info
-    const response = await fetch("http://localhost:3000/user/info", {
+    const response = await fetch(window.URL_BASE + "/user/info", {
         headers: {
             'Content-Type': 'application/json;charset=utf-8',
             'Credentials': 'same-origin'
@@ -29,7 +29,7 @@ async function loadBrowseDropDown() {
     let browseDropDown = document.getElementById('browse-dropdown');
     
 
-    const response = await fetch("http://localhost:3000/sports/get", {
+    const response = await fetch(window.URL_BASE + "/sports/get", {
         headers: {
             'Content-Type': 'application/json;charset=utf-8',
         }
@@ -42,7 +42,7 @@ async function loadBrowseDropDown() {
     for (const sport of sportsArray) {
         let link = document.createElement('a');
         link.classList.add('dropdown-item');
-        link.href = 'http://localhost:3000/stream/browse?category=' + sport.name;
+        link.href = window.URL_BASE + '/stream/browse?category=' + sport.name;
         link.innerText = sport.name;
         browseDropDown.appendChild(link);
     }

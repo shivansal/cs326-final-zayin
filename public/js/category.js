@@ -86,8 +86,7 @@ let body = JSON.stringify({
     live: true
 });
 
-//https://cs326-zayin.herokuapp.com/stream/get
-fetch('http://localhost:3000/stream/get', {
+fetch(window.URL_BASE + '/stream/get', {
     method: "POST", 
     body: body,
     headers: {
