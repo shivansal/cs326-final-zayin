@@ -18,7 +18,6 @@ function handleResponse(response) {
 
 signupBtn.addEventListener('click', function() {
     //do clientside validation
-
     if(password.value !== confirmPassword.value){
         statusMsg.innerText = "Error: passwords don't match"
         statusMsg.classList.add('failed');

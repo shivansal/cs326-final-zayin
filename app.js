@@ -259,7 +259,7 @@ app.post('/user/update', (req, res) => {
     res.json(fakeRes);
 })
 
-app.get('/user', (req, res) => {
+app.get('/user', checkLoggedIn, (req, res) => {
     /* Confirm the user is authorized here
         If not we would normally redirect
         Otherwise render user.html
