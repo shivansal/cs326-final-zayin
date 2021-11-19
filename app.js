@@ -342,13 +342,10 @@ app.get('/stream/browse', (req, res) => { // /stream/browse?category=basketball
 })
 
 //sports api
-app.get('/sports/get', (req, res) => {
+app.get('/sports/get', async (req, res) => {
+    let sports = await sportCollection.find().toArray();
     let fakeRes = {
-        sports: [
-            fakeSport(),
-            fakeSport(),
-            fakeSport()
-        ]
+        sports: sports
     };
 
     res.json(fakeRes);
