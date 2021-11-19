@@ -21,3 +21,7 @@ body {
 .dropdown-menu {
     min-width: 0.25rem;
 }
+
+.hidden {
+    visibility: hidden;
+}

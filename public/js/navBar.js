@@ -16,9 +16,9 @@ async function getUserInfo() {
         const userBox = document.getElementById("userInfo");
         userBox.innerHTML = "@" + user.username;
         document.getElementById('signin-btn').remove();
+        document.getElementById('userInfo').classList.remove('hidden');
     } else {
         userBox.innerHtml = '';
-
     }
 
     
