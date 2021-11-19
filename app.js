@@ -190,6 +190,10 @@ app.post('/signup', async (req, res) => {
     
 });
 
+app.get('/404', (req, res) => {
+    res.sendFile(Path.join(__filename, '../public/views/404.html'));
+});
+
 app.get('/login', (req, res) => {
     res.sendFile(Path.join(__filename, '../public/views/login.html'));
 });
@@ -323,8 +327,15 @@ app.get('/sports', (req, res) => {
 });
 
 //live api
-app.get('/live/:username', (req, res) => {
-    res.sendFile(Path.join(__filename, '../public/views/stream.html'));
+app.get('/live/:username', async (req, res) => {
+    let username = req.params.username
+    let mongoRes = await userCollection.findOne({'username': username})
+    if(mongoRes != null){
+        res.sendFile(Path.join(__filename, '../public/views/stream.html'));
+    }
+    else{
+        res.sendFile(Path.join(__filename, '../public/views/404.html'));
+    }
 });
 
 app.get('*',function (req, res) {
