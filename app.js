@@ -19,6 +19,8 @@ import { mongoInit } from './src/mongo.js';
 
 dotenv.config();
 
+
+
 let client = null;
 let userCollection = null;
 let streamCollection = null;
@@ -170,7 +172,7 @@ app.post('/signup', async (req, res) => {
         const newUserDoc = newUser(username, hash, salt, generateStreamKey(), profilePic)
         let success = true;
         let errorMsg = '';
-        let redirectUrl = 'http://localhost:3000/login';
+        let redirectUrl = 'https://cs326-zayin.herokuapp.com/login';
 
         //insert user
         let mongoRes = await userCollection.insertOne(newUserDoc);
@@ -216,7 +218,7 @@ app.get('/loginsuccess', (req, res) => {
     res.json({
         success: true,
         error: '',
-        redirectUrl: 'http://localhost:3000/sports'
+        redirectUrl: 'https://cs326-zayin.herokuapp.com/sports'
     });
 })
 
@@ -381,5 +383,5 @@ app.get('*',function (req, res) {
 
 
 server.listen(httpPort, () => {
-    console.log(`App listening at http://localhost:${httpPort}`)
+    console.log(`App listening at https://cs326-zayin.herokuapp.com:${httpPort}`)
 })
