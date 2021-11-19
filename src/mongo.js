@@ -8,7 +8,7 @@ export async function mongoInit(uri, cb) {
     const database = client.db("spazz");
 
     await client.connect();
-    cb({
+    return cb({
         client: client,
         userCollection: database.collection("user"),
         streamCollection: database.collection("stream"),

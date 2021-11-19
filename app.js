@@ -28,6 +28,7 @@ mongoInit(process.env.MONGO_URL, (stuff) => {
     userCollection = stuff.userCollection;
     streamCollection = stuff.streamCollection;
     rtmpInit(userCollection, streamCollection);
+    chatInit(server, sessionMiddleware, streamCollection);
 });
 
 async function listDatabases(){
@@ -37,14 +38,13 @@ async function listDatabases(){
 }
 
 
-
-
 // Session configuration
 const session = {
     secret : process.env.SECRET || 'SECRET', // set this encryption key in Heroku config (never in GitHub)!
     resave : false,
     saveUninitialized: false
 };
+let sessionMiddleware = expressSession(session);
 
 //Passport config
 const strategy = new LocalStrategy(
@@ -100,7 +100,7 @@ const httpPort = process.env.PORT || 3000;
 const __filename = fileURLToPath(import.meta.url);
 app.use(express.static('public'))
 
-app.use(expressSession(session));
+app.use(sessionMiddleware);
 passport.use(strategy);
 app.use(passport.initialize());
 app.use(passport.session());
@@ -348,8 +348,7 @@ app.get('*',function (req, res) {
     res.redirect('/sports');
 });
 
-//setup chat
-chatInit(server);
+
 
 server.listen(httpPort, () => {
     console.log(`App listening at http://localhost:${httpPort}`)

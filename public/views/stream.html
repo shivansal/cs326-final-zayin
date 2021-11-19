@@ -44,28 +44,28 @@
     <div class="container-fluid">
         <div class="">
             <div class="row justify-content-start">
-                <div class="col-8">
+                <div class="col-lg-8 col-md-12">
                     <div class="thumbnail-container">
                         <br>
                         <div class="video-container">
-                            <video name="videoElement" controls autoplay="true" src="" id="stream-player">
+                            <video name="videoElement" controls autoplay="true" muted="false" src="" id="stream-player">
                                 Your browser is too old and doesn't support HTML5 video.
                             </video>
                         </div>
 
                         <br>
                         <div class="stream-info-container">
-                            <p class="stream-title">Stream Name</p>
-                            <p class="stream-data">Stream Username</p>
-                            <p class="stream-data">Current Viewers: XXX</p>
+                            <p class="stream-title" id="stream-title"></p>
+                            <p class="stream-data" id="streamer-username"></p>
+                            <p class="stream-data">Current Viewers: <span id="current-viewers"></span></p>
                             <p class="stream-data">Status: <span class="stream-data-red" id="live-indicator">NOT LIVE</span></p>
                         </div>
                     </div>
                 </div>
-                <div class="col-4">
+                <div class="col-lg-4 col-md-12">
                     <br> Chat
                     <br>
-                    <div class="chat-box" id="chat-box"></div>
+                    <div id="chat-box"></div>
                     <label for="chat-input" class="form-label">Type your message</label>
                     <textarea class="form-control" rows="3" id="chat-input"></textarea>
                     <br>
@@ -84,10 +84,10 @@
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
     <script src="https://kit.fontawesome.com/22d0831876.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.socket.io/4.3.2/socket.io.min.js" integrity="sha384-KAZ4DtjNhLChOB/hxXuKqhMLYvx3b5MlT55xPEiNmREKRzeEm+RVPlTnAn0ajQNs" crossorigin="anonymous"></script>
+    <!--<script src="https://cdn.socket.io/4.3.2/socket.io.min.js" integrity="sha384-KAZ4DtjNhLChOB/hxXuKqhMLYvx3b5MlT55xPEiNmREKRzeEm+RVPlTnAn0ajQNs" crossorigin="anonymous"></script>-->
     <script src="/js/stream.js"></script>
     <script src="https://cdn.bootcss.com/flv.js/1.5.0/flv.min.js"></script>
     <!-- <script src="/js/testing>1.js"></script> -->
-
+    <script src="/socket.io/socket.io.js"></script>
 </body>
 </html>
