@@ -75,30 +75,6 @@ const strategy = new LocalStrategy(
 express/webserver stuff
 */
 
-//just for returning fake data
-function fakeStream() {
-    return {
-        username: faker.name.firstName(),
-        title: faker.lorem.sentence(),
-        category: faker.lorem.word(),
-        live: true,
-        viewers: faker.datatype.number(),
-        image: faker.image.sports(),
-        chat: [
-            {username: faker.name.firstName(), msg: faker.lorem.sentence()},
-            {username: faker.name.firstName(), msg: faker.lorem.sentence()},
-            {username: faker.name.firstName(), msg: faker.lorem.sentence()}
-        ]
-    }
-}
-
-function fakeSport() {
-    return {
-        name: faker.lorem.words(),
-        image: faker.image.sports(),
-   }
-}
-
 const app = express();
 const server = Http.createServer(app);
 const httpPort = process.env.PORT || 3000;
