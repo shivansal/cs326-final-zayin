@@ -13,8 +13,6 @@ async function handleResponse(response) {
     let score = 0
     for (const x of response.streams) {
 
-        console.log(x)
-
         let userResponse = await fetch('/user/info?username=' + x.username, {
             headers: {
                 'Accept': 'application/json',
@@ -22,10 +20,11 @@ async function handleResponse(response) {
             }
         });
 
-
         userResponse = await userResponse.json();
 
-        console.log(userResponse)
+        console.log(userResponse);
+
+
 
         const parentdiv = document.createElement('div');
         parentdiv.classList.add('col-xl-3');
@@ -33,12 +32,6 @@ async function handleResponse(response) {
 
         const thumbnailDiv = document.createElement('div');
         thumbnailDiv.classList.add('thumbnail-container');
-
-        thumbnailDiv.addEventListener('click', function() {
-            window.location.href = window.URL_BASE + '/live/' + userResponse.username;
-        });
-
-
         //  thumbnailDiv.addEventListener('click', () => {
         //      window.location.href = "/stream/browse?category=" + sportsArray[i].name;
         //  });
@@ -47,11 +40,11 @@ async function handleResponse(response) {
         streamImage.classList.add('stream-thumbnail');
         streamImage.setAttribute('height', '250');
         streamImage.setAttribute('alt', 'stream thumbnail');
-        if (x.thumbnail == "default" || !String(x.thumbnail).startsWith("https://")) {
+        if (x.image == "default" || !String(x).startsWith("https://")) {
             streamImage.setAttribute('src', "../img/thumbnail.jpeg");
         }
         else {
-            streamImage.setAttribute('src', x.thumbnail);
+            streamImage.setAttribute('src', x.image);
         }
 
         const streamInfo = document.createElement('div');
@@ -64,7 +57,7 @@ async function handleResponse(response) {
         profileImage.classList.add('stream-profile-icon');
         profileImage.setAttribute('height', '40');
         profileImage.setAttribute('alt', 'profile thumbnail');
-        profileImage.setAttribute('src', userResponse.profilepic);
+        profileImage.setAttribute('src', x.image);
 
         const streamName = document.createElement('a');
         streamName.classList.add('stream-link');

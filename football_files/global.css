@@ -25,7 +25,3 @@ body {
 .modal-dark {
     color: #121319;
 }
-
-.form-group {
-    overflow-wrap: break-word;
-}

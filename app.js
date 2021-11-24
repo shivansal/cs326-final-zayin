@@ -19,7 +19,7 @@ import { mongoInit } from './src/mongo.js';
 
 dotenv.config();
 
-
+//https://moonvillageassociation.org/wp-content/uploads/2018/06/default-profile-picture1.jpg
 
 let client = null;
 let userCollection = null;
@@ -128,8 +128,7 @@ app.post('/signup', async (req, res) => {
     //do auth signup stuff here
     const username = req.body.username;
     const password = req.body.password;
-    const streamKey = "nothing";
-    const profilePic = "default";
+    const profilePic = "https://moonvillageassociation.org/wp-content/uploads/2018/06/default-profile-picture1.jpg";
 
     
     //validate username, password
@@ -158,7 +157,7 @@ app.post('/signup', async (req, res) => {
             errorMsg = 'Signup failed';
         } else {
             //insert stream
-            let newStreamDoc = newStream(username, username + '\'s livestream', 'default', false, 0, [])
+            let newStreamDoc = newStream(username, username + '\'s livestream', 'basketball', false, 0, [], 'https://www.medaire.com/ResourcePackages/Bootstrap/assets/dist/images/Default_Image_Thumbnail.png')
             mongoRes = await streamCollection.insertOne(newStreamDoc);
 
             if (mongoRes === null || !mongoRes.acknowledged) {
@@ -219,37 +218,69 @@ app.get('/private',
 });
 
 app.get('/user/info', async (req, res) => {
-    if (req.isAuthenticated()) {
-        let mongoRes = await streamCollection.findOne({'username': req.user.username});
-        let fakeRes = {
+
+    if (req.query.username) {
+        let mongoRes = await userCollection.findOne({'username': req.query.username});
+
+        if (mongoRes) {
+            res.json({
+                success: true,
+                username: mongoRes.username,
+                profilepic: mongoRes.profilepic,
+            });
+        } else {
+            res.json({
+                success: false
+            });
+        }
+    } else if (req.isAuthenticated()) {        
+        let userRes = await userCollection.findOne({'username': req.user.username});
+        let streamRes = await streamCollection.findOne({'username': req.user.username});
+        
+
+
+        res.json({
             success: true,
             username: req.user.username,
             salt: req.user.salt,
             hash: req.user.hash,
             stream_key: req.user.stream_key,
-            stream_title: mongoRes.title,
-            stream_category: mongoRes.category,
-            profilepic: req.user.profilepic,
-            stream_thumbnail: mongoRes.thumbnail,
-        }
-
-        res.json(fakeRes);
+            profilepic: userRes.profilepic,
+            stream_title: streamRes.title,
+            stream_category: streamRes.category,
+            stream_thumbnail: streamRes.thumbnail,
+        });
     } else {
         res.json({
-            success: false,
+            success: false
         });
     }
 });
 
-app.post('/user/update', (req, res) => {
-    console.log(req.body);
-
-    let fakeRes = {
-        success: faker.datatype.boolean(),
-        error: faker.lorem.words(),
+app.post('/user/update', async (req, res) => {
+    let success = true
+    let errorMsg = "Something went wrong";
+    if (req.isAuthenticated()) {
+        let profilepic = req.body.profilepic;
+        console.log(profilepic)
+        try {
+            console.log(req.user.username)
+            await userCollection.updateOne({username: req.user.username}, {
+                $set: {
+                    profilepic: profilepic
+                }
+            });
+        } catch (e) {
+            success = false;
+        }
+    } else {
+        success = false;
     }
 
-    res.json(fakeRes);
+    res.json({
+        success: success,
+        error: errorMsg,
+    });
 })
 
 app.get('/user', checkLoggedIn, (req, res) => {

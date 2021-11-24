@@ -13,8 +13,8 @@ async function addChatMsg(msg, senderUsername, streamUsername, streamCollection)
     return streamCollection.updateOne({username: streamUsername}, {
         $push: {
             chat: {
-                msg: msg,
-                username: senderUsername,
+                $each: [ {msg: msg, username: senderUsername} ],
+                $slice: -5,
             }
         }
     });

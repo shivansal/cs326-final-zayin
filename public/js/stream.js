@@ -6,7 +6,6 @@ let currentlyLive = false;
 let flvPlayer = null;
 let socket = null;
 
-
 function getUsernameFromPath(path) {
     let parts = path.split('/');
     return parts[parts.length - 1];
@@ -156,6 +155,8 @@ function handlePollResponse(stream) {
 }
 
 window.onload = function() {
+    document.title = username + '\'s stream';
+
     chatConnect();
 
     socket.on('loadMessages', (messageObjs) => {

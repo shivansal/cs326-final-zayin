@@ -134,9 +134,11 @@ function getUserInfo() {
     .then(response => {
         return response.json();
     }).then(function(response) {
+        console.log(response)
         currentUserName.innerText = response.username
         currentProfileUrl.innerText = response.profilepic;
         currentProfilePic.src = response.profilepic;
+        currentProfileUrlHelp.innerText = 'Current: ' + response.profilepic;
         currentTitle.innerText = response.stream_title;
         currentCategory.innerText = response.stream_category;
         currentStreamThumb.innerText = response.stream_thumbnail;
