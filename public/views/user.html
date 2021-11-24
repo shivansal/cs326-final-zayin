@@ -4,7 +4,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>User Info </title>
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <title>Your Profile</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,7 +18,7 @@
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm navbar-custom" id="top-nav">
-        <a class="navbar-brand" href="#">
+        <a class="navbar-brand" href="/sports">
             <img src="/img/spazzlogo.png" alt="logo">
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -47,6 +48,7 @@
                         <a class="dropdown-item" href="http://localhost:3000/user">Profile</a>
                         <a class="dropdown-item" href="http://localhost:3000/logout">Logout</a>
                     </div>
+                    <img id="profilePic" alt="Profile Picture" class="hidden">
                 </div>
                 <li class="nav-item active">
                     <a href="/login"><button type="button" id="signin-btn" class="btn btn-light">Sign in <i
@@ -72,11 +74,11 @@
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#userModal">
                     Configure Your Profile
                 </button>
-                <div class="modal fade modal-dark" id="userModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal fade modal-dark" id="userModal" tabindex="-1" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                       <div class="modal-content">
                         <div class="modal-header">
-                          <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                          <h5 class="modal-title" id="userModalLabel">Update Your Profile</h5>
                           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                           </button>
@@ -114,16 +116,16 @@
             </div>
         </div>
         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#streamModal">
     Configure Your Stream
   </button>
   
   <!-- Modal -->
-  <div class="modal fade modal-dark" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade modal-dark" id="streamModal" tabindex="-1" role="dialog" aria-labelledby="streamModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Update Your Stream</h5>
+          <h5 class="modal-title" id="streamModalLabel">Update Your Stream</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>

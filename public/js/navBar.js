@@ -14,6 +14,7 @@ async function getUserInfo() {
 
     let user = await response.json();
     if (user.success) {
+        profilePic.classList.remove(...profilePic.classList);
         userBox.innerHTML = "@" + user.username;
         profilePic.setAttribute("src", user.profilepic);
         profilePic.setAttribute("height", "50px");
