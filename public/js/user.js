@@ -17,7 +17,7 @@ let currentTitleHelp = document.getElementById('currentTitleHelp');
 let currentThumbHelp = document.getElementById('currentThumbHelp');
 let currentCategoryHelp = document.getElementById('currentCategoryHelp');
 let currentProfileUrlHelp = document.getElementById('currentProfileUrlHelp');
-
+let streamLink = document.getElementById('stream-link');
 
 console.log(newTitle)
 console.log(newStreamThumb)
@@ -146,7 +146,8 @@ function getUserInfo() {
         currentTitleHelp.innerText = "Current: " + response.stream_title;
         currentThumbHelp.innerText = "Current: " + response.stream_thumbnail;
         currentCategoryHelp.innerText = "Current: " + response.stream_category;
-
+        streamLink.innerText = window.URL_BASE + '/live/' + response.username;
+        streamLink.href = window.URL_BASE + '/live/' + response.username;
     });
 }
 

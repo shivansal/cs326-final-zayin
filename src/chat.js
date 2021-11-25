@@ -14,7 +14,7 @@ async function addChatMsg(msg, senderUsername, streamUsername, streamCollection)
         $push: {
             chat: {
                 $each: [ {msg: msg, username: senderUsername} ],
-                $slice: -5,
+                $slice: -250,
             }
         }
     });

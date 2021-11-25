@@ -147,7 +147,7 @@ app.post('/signup', async (req, res) => {
         const newUserDoc = newUser(username, hash, salt, generateStreamKey(), profilePic)
         let success = true;
         let errorMsg = '';
-        let redirectUrl = 'http://localhost:3000/login';
+        let redirectUrl = 'https://cs326-zayin.herokuapp.com/login';
 
         //insert user
         let mongoRes = await userCollection.insertOne(newUserDoc);
@@ -193,7 +193,7 @@ app.get('/loginsuccess', (req, res) => {
     res.json({
         success: true,
         error: '',
-        redirectUrl: 'http://localhost:3000/sports'
+        redirectUrl: 'https://cs326-zayin.herokuapp.com/sports'
     });
 })
 
