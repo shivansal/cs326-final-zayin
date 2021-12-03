@@ -1,31 +1,28 @@
 'use strict';
 import Path from 'path';
-import Http from 'http'
-import faker from 'faker';
+import Http, { get } from 'http'
 import chatInit from './src/chat.js'
 import rtmpInit from './src/rtmp.js';
 import express from 'express';
-import { fileURLToPath } from 'url';
+import crypto from 'crypto';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv'
 import expressSession from 'express-session';
 import passport from 'passport';
 import LocalStrategy from 'passport-local';
-import crypto from 'crypto';
-
-import { generateStreamKey, newUser } from './src/user.js';
-import {newStream} from './src/stream.js';
+import { fileURLToPath } from 'url';
 import { mongoInit } from './src/mongo.js';
+import {checkLoggedIn, signUp} from './src/auth.js';
+import { getAllUserInfo, getSafeUserInfo, updateUser } from './src/user.js';
+import { getStreams, updateStream } from './src/stream.js';
+import { isValidCategory } from './src/sport.js';
 
 dotenv.config();
-
-//https://moonvillageassociation.org/wp-content/uploads/2018/06/default-profile-picture1.jpg
 
 let client = null;
 let userCollection = null;
 let streamCollection = null;
 let sportCollection = null;
-
 
 mongoInit(process.env.MONGO_URL, (stuff) => {
     client = stuff.client;
@@ -35,13 +32,6 @@ mongoInit(process.env.MONGO_URL, (stuff) => {
     rtmpInit(userCollection, streamCollection);
     chatInit(server, sessionMiddleware, streamCollection);
 });
-
-async function listDatabases(){
-    var databasesList = await client.db().admin().listDatabases();
-    console.log("Databases:");
-    databasesList.databases.forEach(db => console.log(` - ${db.name}`));
-}
-
 
 // Session configuration
 const session = {
@@ -95,29 +85,10 @@ passport.deserializeUser((uid, done) => {
     done(null, uid);
 });
 
-
-//app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.urlencoded({
     extended: true
 }));
 app.use(bodyParser.json());
-
-
-// finally {
-//     await client.close();
-// }
-
-
-function checkLoggedIn(req, res, next) {
-    if (req.isAuthenticated()) {
-	// If we are authenticated, run the next route.
-	next();
-    } else {
-	// Otherwise, redirect to the login page.
-	res.redirect('/login');
-    }
-}
-
 
 //user api
 app.get('/signup', (req, res) => {
@@ -128,52 +99,9 @@ app.post('/signup', async (req, res) => {
     //do auth signup stuff here
     const username = req.body.username;
     const password = req.body.password;
-    const profilePic = "https://moonvillageassociation.org/wp-content/uploads/2018/06/default-profile-picture1.jpg";
 
-    
-    //validate username, password
-    //generate stream key, set default profile
-
-    let mongoRes = await userCollection.findOne({'username': username})
-    if(mongoRes != null){
-        res.json({
-            success: false,
-            errorMsg: "Username taken",
-        });
-    }
-    else{
-        let salt = crypto.randomBytes(16).toString('hex')
-        let hash = crypto.pbkdf2Sync(password, salt, 1000, 64, `sha512`).toString(`hex`);
-        const newUserDoc = newUser(username, hash, salt, generateStreamKey(), profilePic)
-        let success = true;
-        let errorMsg = '';
-        let redirectUrl = 'https://cs326-zayin.herokuapp.com/login';
-
-        //insert user
-        let mongoRes = await userCollection.insertOne(newUserDoc);
-
-        if (mongoRes === null || !mongoRes.acknowledged) {
-            success = false;
-            errorMsg = 'Signup failed';
-        } else {
-            //insert stream
-            let newStreamDoc = newStream(username, username + '\'s livestream', 'basketball', false, 0, [], 'https://www.medaire.com/ResourcePackages/Bootstrap/assets/dist/images/Default_Image_Thumbnail.png')
-            mongoRes = await streamCollection.insertOne(newStreamDoc);
-
-            if (mongoRes === null || !mongoRes.acknowledged) {
-                success = false;
-                errorMsg = 'Stream creation failed';
-            }
-        }
-
-        res.json({
-            success: success,
-            errorMsg: errorMsg,
-            redirectUrl: redirectUrl
-        });
-    }
-
-    
+    let resultObj = await signUp(username, password, userCollection, streamCollection);
+    res.json(resultObj);
 });
 
 app.get('/404', (req, res) => {
@@ -193,7 +121,7 @@ app.get('/loginsuccess', (req, res) => {
     res.json({
         success: true,
         error: '',
-        redirectUrl: 'https://cs326-zayin.herokuapp.com/sports'
+        redirectUrl: 'http://localhost:3000/sports'
     });
 })
 
@@ -211,140 +139,63 @@ app.get('/logout', (req, res) => {
     res.redirect('/login'); // back to login
 });
 
-app.get('/private',
-	checkLoggedIn,
-	(req, res) => {
-	    res.send("hello world");
-});
-
 app.get('/user/info', async (req, res) => {
-
+    let result = {success: false};
     if (req.query.username) {
-        let mongoRes = await userCollection.findOne({'username': req.query.username});
-
-        if (mongoRes) {
-            res.json({
-                success: true,
-                username: mongoRes.username,
-                profilepic: mongoRes.profilepic,
-            });
-        } else {
-            res.json({
-                success: false
-            });
-        }
-    } else if (req.isAuthenticated()) {        
-        let userRes = await userCollection.findOne({'username': req.user.username});
-        let streamRes = await streamCollection.findOne({'username': req.user.username});
-        
-
-
-        res.json({
-            success: true,
-            username: req.user.username,
-            salt: req.user.salt,
-            hash: req.user.hash,
-            stream_key: req.user.stream_key,
-            profilepic: userRes.profilepic,
-            stream_title: streamRes.title,
-            stream_category: streamRes.category,
-            stream_thumbnail: streamRes.thumbnail,
-        });
-    } else {
-        res.json({
-            success: false
-        });
+        result = await getSafeUserInfo(req.query.username, userCollection);
+    } else if (req.isAuthenticated()) {  
+        result = await getAllUserInfo(req.user.username, userCollection);
     }
+
+    res.json(result);
 });
 
 app.post('/user/update', async (req, res) => {
-    let success = true
-    let errorMsg = "Something went wrong";
+    let result = {success: false, error: 'User not authenticated'};
     if (req.isAuthenticated()) {
-        let profilepic = req.body.profilepic;
-        console.log(profilepic)
-        try {
-            console.log(req.user.username)
-            await userCollection.updateOne({username: req.user.username}, {
-                $set: {
-                    profilepic: profilepic
-                }
-            });
-        } catch (e) {
-            success = false;
-        }
-    } else {
-        success = false;
+        let profilePic = req.body.profilepic !== undefined ? req.body.profilepic : req.user.profilepic;
+        result = await updateUser(req.user.username, profilePic, userCollection);
     }
 
-    res.json({
-        success: success,
-        error: errorMsg,
-    });
+    res.json(result);
 })
 
 app.get('/user', checkLoggedIn, (req, res) => {
-    /* Confirm the user is authorized here
-        If not we would normally redirect
-        Otherwise render user.html
-    */
-
     res.sendFile(Path.join(__filename, '../public/views/user.html'));
 });
 
 //stream api
 app.post('/stream/update', async (req, res) => {
-    // console.log(req.body)
-    let category = (req.body.category).trim().toLowerCase();
-    let mongoRes = await sportCollection.findOne({'name': category})
-  
-    // console.log(req.user)
-    if(mongoRes == null){
-        res.json({
-            success: false,//or false if failed
-            error: "Not a valid category"
-        });
+    let response = {success: false, error: 'Invalid category'};
+    if (req.isAuthenticated()) {
+        let username = req.user.username;
+        let currentStream = await getStreams(streamCollection, username);
+        let category = req.body.category !== undefined ? (req.body.category).trim().toLowerCase() : currentStream.category;
+        let title = req.body.title !== undefined ? req.body.title : currentStream.title;
+        let thumbnail = req.body.thumbnail !== undefined ? req.body.thumbnail : currentStream.thumbnail;
+
+        let isValidSport = await isValidCategory(category, sportCollection);
+
+        if (isValidSport) {
+            response = await updateStream(username, title, category, thumbnail, streamCollection)
+        }
     }
-    else{
-        let newObj = {}
-    
-        if(req.body.title.length != 0){
-            newObj["title"] = req.body.title
-        }
-        if(req.body.category.length != 0){
-            newObj["category"] = req.body.category
-        }
-        if(req.body.thumbnail.length != 0){
-            newObj["thumbnail"] = req.body.thumbnail
-        }
-        let updateRes = await streamCollection.updateOne({"username": req.user.username}, {$set: newObj});
-        res.json({
-            success: true //or false if failed
-        });
-    }
+
+    res.json(response);
 });
 
 app.post('/stream/get', async (req, res) => {
-    let query = {}
+    //{$exists: true}: matches anything
+    let username = req.body.username;
+    let category = req.body.category;
+    let live = req.body.live;
 
-    if (req.body.username) {
-        query.username = req.body.username;
-    }
+    let result = await getStreams(streamCollection, username, category, live);
 
-    if (req.body.category) {
-        query.category = req.body.category;
-    }
+    console.log(username, category, live)
+    //console.log(result);
 
-    if (req.body.live) {
-        query.live = req.body.live;
-    }
-
-    let streamDocs = await streamCollection.find(query).toArray();
-    if (streamDocs) {
-        res.json({'streams': streamDocs});
-    } else {
-        res.json({'streams': []});
-    }
+    res.json(result);
 });
 
 app.get('/stream/browse', (req, res) => { // /stream/browse?category=basketball

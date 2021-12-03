@@ -1,3 +1,4 @@
+//https://external-preview.redd.it/f8lFTnZRu0UtxulCXCUhTsHMTBZRKU6X3Zj8ciG2IAU.jpg?auto=webp&s=60039b6c45e1320d503c21d9c3e47ff9cd058e46
 let currentUserName = document.getElementById('current-username');
 let currentTitle = document.getElementById('current-title');
 let currentCategory = document.getElementById('current-category');
@@ -128,27 +129,57 @@ updateUserBtn.addEventListener('click', function() {
 
 })
 
-function getUserInfo() {
-    //send post to /stream/update endpoint
-    fetch(window.URL_BASE + '/user/info') //https://cs326-zayin.herokuapp.com/user/info
-    .then(response => {
-        return response.json();
-    }).then(function(response) {
-        console.log(response)
-        currentUserName.innerText = response.username
-        currentProfileUrl.innerText = response.profilepic;
-        currentProfilePic.src = response.profilepic;
-        currentProfileUrlHelp.innerText = 'Current: ' + response.profilepic;
-        currentTitle.innerText = response.stream_title;
-        currentCategory.innerText = response.stream_category;
-        currentStreamThumb.innerText = response.stream_thumbnail;
-        streamKey.innerText = response.username + '?key=' + response.stream_key;
-        currentTitleHelp.innerText = "Current: " + response.stream_title;
-        currentThumbHelp.innerText = "Current: " + response.stream_thumbnail;
-        currentCategoryHelp.innerText = "Current: " + response.stream_category;
-        streamLink.innerText = window.URL_BASE + '/live/' + response.username;
-        streamLink.href = window.URL_BASE + '/live/' + response.username;
-    });
+async function getUser() {
+    let user = await fetch(window.URL_BASE + '/user/info');
+    user = await user.json();
+
+    return user;
 }
 
-window.onload = getUserInfo;
+async function getStream(username) {
+    let body = JSON.stringify({
+        username: username,
+    });
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+
+    console.log(body);
+
+    let streamsRes = await fetch('/stream/get', {method: 'POST', body: body, headers: headers});
+    streamsRes = await streamsRes.json();
+    let streams = streamsRes.streams;
+
+    return streams[0];
+}
+
+function renderUserInfo(user) {
+    currentUserName.innerText = user.username
+    streamLink.innerText = window.URL_BASE + '/live/' + user.username;
+    currentProfileUrl.innerText = user.profilepic;
+    currentProfilePic.src = user.profilepic;
+    currentProfileUrlHelp.innerText = 'Current: ' + user.profilepic;
+    streamKey.innerText = user.username + '?key=' + user.stream_key;
+    streamLink.href = window.URL_BASE + '/live/' + user.username;
+}
+
+function renderStreamInfo(stream) {
+    currentTitle.innerText = stream.title;
+    currentTitleHelp.innerText = "Current: " + stream.title;
+    currentCategory.innerText = stream.category;
+    currentCategoryHelp.innerText = "Current: " + stream.category;
+    currentStreamThumb.innerText = stream.thumbnail;
+    currentThumbHelp.innerText = "Current: " + stream.thumbnail;
+}
+
+async function updateUserAndStream() {
+    let user = await getUser();
+    let stream = await getStream(user.username);
+
+    console.log(stream)
+
+    renderUserInfo(user);
+    renderStreamInfo(stream);
+}
+
+updateUserAndStream();
+

@@ -1,5 +1,6 @@
-import faker from 'faker';
 import { Server } from "socket.io";
+
+const MAX_MSG_HISTORY = 250;
 
 function getUserFromSocket(socket) {
     try {
@@ -14,7 +15,7 @@ async function addChatMsg(msg, senderUsername, streamUsername, streamCollection)
         $push: {
             chat: {
                 $each: [ {msg: msg, username: senderUsername} ],
-                $slice: -250,
+                $slice: -MAX_MSG_HISTORY,
             }
         }
     });
@@ -39,7 +40,6 @@ async function resetViewers(streamCollection) {
 export default async function chatInit(httpServer, sessionMiddleware, streamCollection) {
     await resetViewers(streamCollection);
     const io = new Server(httpServer, {});
-    //io.use();
 
     //create namespace
     const chatNamespace = io.of('/chat');
