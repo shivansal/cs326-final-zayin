@@ -1,4 +1,5 @@
 import { Server } from "socket.io";
+import { getStreams } from "./stream.js";
 
 const MAX_MSG_HISTORY = 250;
 
@@ -49,19 +50,17 @@ export default async function chatInit(httpServer, sessionMiddleware, streamColl
 
     chatNamespace.on('connection', async (socket) => {
         let user = getUserFromSocket(socket);
-        let streamerUserName = socket.handshake.query["streamer_username"];
+        let streamerUserName = socket.handshake.query["streamer_username"] !== undefined ? socket.handshake.query["streamer_username"] : '';
 
-        let streamDoc = await streamCollection.findOne({
-            username: streamerUserName
-        });
-
-        if (!streamDoc) {
-            //fuck off
-            socket.disconnect();
+        let streamResult = await getStreams(streamCollection, streamerUserName);
+        if (!streamResult.success || streamResult.streams.length < 1) {
+            socket.disconnect(); //stream doesnt exist
             return;
         }
 
-        if (user && streamerUserName) {
+        let streamDoc = streamResult.streams[0]; //only can be 1
+
+        if (user) {
             console.log(user.username + " has joined", streamDoc.username + '\'s chat room');
         } else {
             console.log('GUEST has joined', streamDoc.username + '\'s chat room');
@@ -79,7 +78,7 @@ export default async function chatInit(httpServer, sessionMiddleware, streamColl
 
         //if the user is authenticated
         if (user) {
-            console.log('user is authenticated')
+            console.log('chat user:', user.username, ' is authenticated');
             //fires when this specific socket sends message
             socket.on('chatMessage', async (msgObj) => {
                 chatNamespace.to(chatRoomId).emit('chatMessage', {
@@ -97,11 +96,9 @@ export default async function chatInit(httpServer, sessionMiddleware, streamColl
         });
 
         socket.on('getMessages', async () => {
-            let streamDoc = await streamCollection.findOne({
-                username: streamerUserName
-            });
-
-            if (streamDoc) {
+            streamResult = await getStreams(streamCollection, streamerUserName);
+            if (streamResult.success && streamResult.streams.length > 0) {
+                streamDoc = streamResult.streams[0];
                 socket.emit('loadMessage', streamDoc.chat);
             } else {
                 socket.emit('loadMessage', []);

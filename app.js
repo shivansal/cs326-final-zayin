@@ -192,9 +192,6 @@ app.post('/stream/get', async (req, res) => {
 
     let result = await getStreams(streamCollection, username, category, live);
 
-    console.log(username, category, live)
-    //console.log(result);
-
     res.json(result);
 });
 
@@ -218,7 +215,7 @@ app.get('/sports', (req, res) => {
 app.get('/live/:username', async (req, res) => {
     let username = req.params.username;
     let userResult = await getSafeUserInfo(username, userCollection);
-    if (userResult.success && userResult.exists) {
+    if (userResult.success) {
         res.sendFile(Path.join(__filename, '../public/views/stream.html'));
     } else {
         res.sendFile(Path.join(__filename, '../public/views/404.html'));

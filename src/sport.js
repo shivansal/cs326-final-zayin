@@ -5,16 +5,17 @@ export async function isValidCategory(category, sportCollection) {
 
 export async function getSports(sportCollection) {
     let result = {
-        success: true,
+        success: false,
         sports: []
     }
 
     try {
         let sports = await sportCollection.find().toArray();
-        result.sports = sports;
-    } catch (e) {
-        result.success = false;
-    }
+        if (sports) {
+            result.sports = sports;
+            result.success = true
+        }
+    } catch (e) {}
 
     return result;
 }

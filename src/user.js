@@ -1,6 +1,6 @@
 import cryptoRandomString from 'crypto-random-string';
 
-const STREAM_KEY_LENGTH = 10;
+const STREAM_KEY_LENGTH = 20;
 const DEFAULT_PROFILEPIC = "https://moonvillageassociation.org/wp-content/uploads/2018/06/default-profile-picture1.jpg";
 
 export function newUser(username, hash, salt, streamKey, profilePic=DEFAULT_PROFILEPIC) {
@@ -20,7 +20,7 @@ export function newUser(username, hash, salt, streamKey, profilePic=DEFAULT_PROF
 export function generateStreamKey() {
     return cryptoRandomString({
         length: STREAM_KEY_LENGTH,
-        type: 'base64',
+        type: 'alphanumeric',
     });
 }
 
@@ -42,18 +42,19 @@ export async function createUserAndInsert(username, hash, salt, userCollection) 
 export async function getSafeUserInfo(username, userCollection) {
     let result = {success:false, username:'', profilePic:''};
     try {
-        let mongoRes = await userCollection.findOne({'username': username});
-        result.success = true;
-        result.username = mongoRes.username;
-        result.profilepic = mongoRes.profilepic;   
-        result.exists = mongoRes.username !== undefined;
-    } catch (e) {}
+        let userRes = await userCollection.findOne({'username': username});
+        if (userRes) {
+            result.success = true;
+            result.username = userRes.username;
+            result.profilepic = userRes.profilepic;   
+        }
+    } catch (e) { console.log(e); }
 
     return result;
 }
 
 export async function getAllUserInfo(username, userCollection) {
-    let mongoRes = await userCollection.findOne({'username': username});
+    let userRes = await userCollection.findOne({'username': username});
 
     let result = {
         success: false, username: '', salt: '',
@@ -63,16 +64,16 @@ export async function getAllUserInfo(username, userCollection) {
         stream_thumbnail: '',
     };
 
-    if (mongoRes) {
+    if (userRes) {
         result.success = true
         result.username = username
-        result.salt = mongoRes.salt
-        result.hash = mongoRes.hash
-        result.stream_key = mongoRes.stream_key
-        result.profilepic = mongoRes.profilepic
-        result.stream_title = mongoRes.title
-        result.stream_category =  mongoRes.category
-        result.stream_thumbnail = mongoRes.thumbnail
+        result.salt = userRes.salt
+        result.hash = userRes.hash
+        result.stream_key = userRes.stream_key
+        result.profilepic = userRes.profilepic
+        result.stream_title = userRes.title
+        result.stream_category =  userRes.category
+        result.stream_thumbnail = userRes.thumbnail
     }
     
     return result;
@@ -86,7 +87,6 @@ export async function updateUser(username, newProfilePic, userCollection) {
     try {
         let user = await userCollection.findOne({username: username});
         if (user) {
-            console.log("HIT")
             let updateResult = await userCollection.updateOne({username: username}, {$set: {profilepic: newProfilePic}});
             result.success = updateResult.modifiedCount === 1;
         }

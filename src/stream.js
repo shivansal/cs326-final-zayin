@@ -42,14 +42,15 @@ export async function getStreams(streamCollection, username={$exists: true}, cat
         live: live
     };
 
-    let result = {streams: []};
+    let result = {streams: [], success: false};
 
     try {
         let streamDocs = await streamCollection.find(query).toArray();
         if (streamDocs) {
             result.streams = streamDocs;
+            result.success = true
         }
-    } catch (e) {}
+    } catch (e) {console.log(e)}
 
     return result;
 }
@@ -60,16 +61,19 @@ export async function updateStream(username, title, category, thumbnail, streamC
         errorMsg: 'THIS IS AN ERROR MESSAGE, SOMETHING WENT WRONG IDIOT'
     }
 
-    let updateRes = await streamCollection.updateOne({
-        username: username
-    }, {
-        $set: {
-            title: title,
-            category: category,
-            thumbnail: thumbnail
-        }
-    });
+    try {
+        let updateRes = await streamCollection.updateOne({
+            username: username
+        }, {
+            $set: {
+                title: title,
+                category: category,
+                thumbnail: thumbnail
+            }
+        });
 
-    result.success = updateRes.modifiedCount === 1;
+        result.success = updateRes.modifiedCount === 1;
+    } catch (e) { console.log(e) }
+    
     return result;
 }
