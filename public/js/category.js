@@ -64,6 +64,9 @@ async function handleResponse(response) {
         profileImage.classList.add('stream-profile-icon');
         profileImage.setAttribute('height', '40');
         profileImage.setAttribute('alt', 'profile thumbnail');
+
+        console.log(userResponse)
+
         profileImage.setAttribute('src', userResponse.profilepic);
 
         const streamName = document.createElement('a');

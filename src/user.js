@@ -40,14 +40,14 @@ export async function createUserAndInsert(username, hash, salt, userCollection) 
 
 //gets nonsensitive user info for 'username'
 export async function getSafeUserInfo(username, userCollection) {
-    let mongoRes = await userCollection.findOne({'username': username});
     let result = {success:false, username:'', profilePic:''};
-
-    if (mongoRes) {
+    try {
+        let mongoRes = await userCollection.findOne({'username': username});
         result.success = true;
         result.username = mongoRes.username;
-        result.profilePic = mongoRes.profilepic;   
-    }
+        result.profilepic = mongoRes.profilepic;   
+        result.exists = mongoRes.username !== undefined;
+    } catch (e) {}
 
     return result;
 }

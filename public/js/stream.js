@@ -88,7 +88,7 @@ function onChatMessage(msgPair) {
     addChatMsg(msgPair.username, msgPair.msg);
 }
 
-async function pollStream(username, next) {
+async function pollStream(next) {
     let body = JSON.stringify({
         username: username
     });
@@ -174,13 +174,14 @@ window.onload = function() {
         }
             
     });
+
     setupPlayer()
     //poll right away
-    pollStream(username, handlePollResponse);
+    pollStream(handlePollResponse);
 
     //Poll every 2 seconds to check for live
     setInterval(() => {
-        pollStream(username, handlePollResponse);
+        pollStream(handlePollResponse);
     }, 2000);
 }
 

@@ -15,7 +15,7 @@ import { mongoInit } from './src/mongo.js';
 import {checkLoggedIn, signUp} from './src/auth.js';
 import { getAllUserInfo, getSafeUserInfo, updateUser } from './src/user.js';
 import { getStreams, updateStream } from './src/stream.js';
-import { isValidCategory } from './src/sport.js';
+import { getSports, isValidCategory } from './src/sport.js';
 
 dotenv.config();
 
@@ -205,17 +205,9 @@ app.get('/stream/browse', (req, res) => { // /stream/browse?category=basketball
 
 //sports api
 app.get('/sports/get', async (req, res) => {
-    let sports = await sportCollection.find().toArray();
+    let sportsResult = await getSports(sportCollection);
 
-    if (sports) {
-        res.json({
-            sports: sports
-        });
-    } else {
-        res.json({
-            sports: []
-        });
-    }
+    res.json(sportsResult);
 });
 
 app.get('/sports', (req, res) => {
@@ -224,12 +216,11 @@ app.get('/sports', (req, res) => {
 
 //live api
 app.get('/live/:username', async (req, res) => {
-    let username = req.params.username
-    let mongoRes = await userCollection.findOne({'username': username})
-    if(mongoRes != null){
+    let username = req.params.username;
+    let userResult = await getSafeUserInfo(username, userCollection);
+    if (userResult.success && userResult.exists) {
         res.sendFile(Path.join(__filename, '../public/views/stream.html'));
-    }
-    else{
+    } else {
         res.sendFile(Path.join(__filename, '../public/views/404.html'));
     }
 });
@@ -237,8 +228,6 @@ app.get('/live/:username', async (req, res) => {
 app.get('*',function (req, res) {
     res.redirect('/sports');
 });
-
-
 
 server.listen(httpPort, () => {
     console.log(`App listening at https://cs326-zayin.herokuapp.com:${httpPort}`)
