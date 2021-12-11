@@ -245,9 +245,9 @@ sport document
 5. post('/login'): post request with the login information of the user. Returns authentication success or faliure. if successful, it redirects the logged in user to sports page. If unsuccessful, it keeps the user at login page.
 6. get('/logout'): logs out the user and redirects to login page.
 7. get('/user/info'): get request to retrieve username, stream_key, profilepic, stream_title, stream_category,stream_thumbnail: streamRes.thumbnail
-8. get('/user/update'): post request to update the user's profile picture link
-9. get('/user'): Confirms the user is authorized. If not we would normally redirect Otherwise renders user page.
-10. post('/stream/update'): post request to update the user's stream title, stream category, stream thumbnail.
+8. get('/user/update') AUTHENTICATED: post request to update the user's profile picture link
+9. get('/user') AUTHENTICATED: Confirms the user is authorized. If not we would normally redirect Otherwise renders user page.
+10. post('/stream/update') AUTHENTICATED: post request to update the user's stream title, stream category, stream thumbnail.
 11. get('/stream/browse'): gets the category page for a specific sports category
 12. get('/sports/get'): get request to get the list of available sports
 13. get('/sports'): get request to redirect to the sports page
