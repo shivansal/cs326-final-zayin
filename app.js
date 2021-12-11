@@ -121,7 +121,7 @@ app.get('/loginsuccess', (req, res) => {
     res.json({
         success: true,
         error: '',
-        redirectUrl: 'http://localhost:3000/sports'
+        redirectUrl: 'https://cs326-zayin.herokuapp.com/sports'
     });
 })
 
@@ -223,7 +223,6 @@ app.get('/live/:username', async (req, res) => {
 });
 
 app.get('/help', function(req, res) {
-    console.log('blah')
     res.sendFile(Path.join(__filename, '../public/views/help.html'));
 })
 
