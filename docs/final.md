@@ -253,3 +253,49 @@ sport document
 13. get('/sports'): get request to redirect to the sports page
 14. get('/live/:username'): get request to redirect to the stream page of the specific user
 15. get('*'): get request to redirect to sports page for an invalid link
+
+
+# Final Rubric
+
+### General &emsp; &emsp; &emsp; &emsp; &emsp; ___ / 25 pts
+
+- Authentication
+  - Successfully create a user through sign up
+  - Successfully login a user
+  - Only able to see profile picture in top right corner when logged in
+- Routing
+- Linting/ code style
+
+### Sports Page &emsp; &emsp; &emsp; &emsp; &emsp; ___ / 10 pts
+- Successfully view all valid sport offerings on the platform
+- Successfully click each sport and get redirected to appropriate stream browsing page 
+
+### User Page &emsp; &emsp; &emsp; &emsp; &emsp; ___ / 20 pts
+- Successfully access user page when logged in
+- Successfully change user image 
+- Successfully edit stream information details 
+
+### Browse Stream page &emsp; &emsp; &emsp; &emsp; &emsp; ___ / 15 pts
+- Successfully view all current livestreams for each respective sport 
+- Successfully get redirected to the correct live page when clicking on a stream
+
+### Livestream Page &emsp; &emsp; &emsp; &emsp; &emsp; ___ / 25 pts
+- Successfully view livestream and current viewer count 
+- Successfully read and send messages to stream chat 
+- Successfully deploy your stream using stream client + steam key (for streamers only)
+
+### CRUD &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp;  ___ / 5 pts									
+- Create: **1 pt**
+  - User
+  - Stream
+- Read: **2 pt**
+  - Read valid sport categories on the platform
+  - Read user stream key, image, name, password hash and salt
+  - Grab current live streams 
+  - Read stream category, title, thumbnail, viewers, chat object,
+- Update: **2 pt**
+  - Edit user profile picture
+  - Update stream to indicate currently live or offline
+  - Update stream thumbnail, live stream chat object, viewer count, and category
+
+### &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; Total:  ___ / 100 points
