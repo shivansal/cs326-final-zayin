@@ -85,6 +85,7 @@ function onSendClicked() {
 
 //will fire when message recieved
 function onChatMessage(msgPair) {
+    console.log(msgPair)
     addChatMsg(msgPair.username, msgPair.msg);
 }
 

@@ -222,9 +222,17 @@ app.get('/live/:username', async (req, res) => {
     }
 });
 
+app.get('/help', function(req, res) {
+    console.log('blah')
+    res.sendFile(Path.join(__filename, '../public/views/help.html'));
+})
+
 app.get('*',function (req, res) {
     res.redirect('/sports');
 });
+
+
+
 
 server.listen(httpPort, () => {
     console.log(`App listening at https://cs326-zayin.herokuapp.com:${httpPort}`)

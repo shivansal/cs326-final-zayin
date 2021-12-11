@@ -18,3 +18,7 @@
 .user-info {
     margin-bottom: 10px;
 }
+
+#stream-key {
+    color: rgb(179, 17, 17);
+}
